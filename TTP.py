@@ -4,26 +4,72 @@ import copy
 
 COUNT = 0
 
-def counter():
+# Debugging function to count the number of times a function is called
+def counter(print=True):
     global COUNT
     COUNT += 1
-    print(COUNT)
+    if print:
+        print(COUNT)
 
-def print_schedules(n, schedules):
-    print("TTP for %d teams:" % n)
-    for schedule in schedules:
+
+# Debugging function to print the schedules
+def print_schedules(n, schedules, first=20):
+    print("First %d TTP schedules (out of %d) for %d teams:" % (first, len(schedules), n))
+    for schedule in schedules[:first]:
         print("", schedule)
 
-def generate_matchups(n):
-    # Initialize matchups array
-    matchups = []
 
-    # Generate all possible matchups
+# Debugging function to print the all possible matchups
+def print_matchups(matchups, first=20):
+    print("First %d matchups:" % first)
+    for m in matchups[:first]:
+        print("", m)
+
+
+# Debugging function to print the all possible rounds
+def print_rounds(rounds, first=20):
+    print("First %d rounds:" % first)
+    for r in list(rounds)[:first]:
+        print("", tuple(r))
+
+
+# Function to generate all possible rows
+def generate_rounds(n, matchups, rounds, round=set()):
+    if len(round) == n // 2:
+        rounds.add(frozenset(round))
+        return
+    
+    for m in matchups:
+        duplicate = False
+
+        for r in round:
+            if m[0] in r or m[1] in r:
+                duplicate = True
+                break
+
+        if duplicate:
+            continue
+
+        new_matchups = matchups.copy()
+        new_matchups.remove(m)
+        new_round = round.copy()
+        new_round.add(m)
+        # new_row.append(m)
+        generate_rounds(n, new_matchups, rounds, new_round)
+
+
+# Generate all possible matchups
+def generate_matchups(n, matchups):
     for i in range(n):
         for j in range(n):
             if i != j:
                 matchups.append((i, j))
-    return matchups
+
+
+# Generate all possible schedules given all possible rounds
+# def generate_schedule(n, rounds, schedules, schedule=[]):
+
+
 
 def generate_schedules(n, matchups, schedules, schedule=[]):
     if len(schedule) is (n-1) * n:
@@ -32,8 +78,8 @@ def generate_schedules(n, matchups, schedules, schedule=[]):
 
     prev = []
     index = len(schedule) % (n // 2)
-    
-    if index is not 0:
+
+    if index != 0:
         temp = schedule[-index:]
         for t in temp:
             prev.append(t[0])
@@ -49,16 +95,22 @@ def generate_schedules(n, matchups, schedules, schedule=[]):
         new_schedule.append(m)
 
         generate_schedules(n, new_matchups, schedules, new_schedule)
-        
+
 
 def generate_TTP(n):
     schedules = []
-    matchups = generate_matchups(n)
-    print("Matchups:\n", matchups)
-    generate_schedules(n, matchups, schedules)
+    rounds = set()
+    matchups = []
 
-    #print(len(schedules))
-    print_schedules(n, schedules[:20])
+    generate_matchups(n, matchups)
+    print_matchups(matchups)
+
+    generate_rounds(n, matchups, rounds)
+    print_rounds(rounds)
+
+    generate_schedules(n, matchups, schedules)
+    print_schedules(n, schedules, 5)
+
 
 if __name__ == "__main__":
     # Set n_start and n_end equal to first and second command line arguments
