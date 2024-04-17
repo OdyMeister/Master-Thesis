@@ -4,60 +4,6 @@ import copy
 
 COUNT = 0
 
-# def generate_schedules(n, matchups, schedule, team=0):
-#     # If team is equal to n, print the schedule and return
-#     if team == n:
-#         # for i in range(len(schedule)):
-#         #     print(i, schedule[i])
-#         # print()
-#         global COUNT
-#         COUNT += 1
-#         return
-    
-#     # If there are no matchups for the team, increment team and call generate_schedules
-#     if len(matchups[team]) == 0:
-#         team += 1
-#         generate_schedules(n, matchups, schedule, team)
-#         return
-    
-#     for m in matchups[team]:
-#         new_matchups = copy.deepcopy(matchups)
-#         new_schedule = copy.deepcopy(schedule)
-
-#         for i in range((n-1)*2):
-#             if new_schedule[team][i] != None or new_schedule[m[0]][i] != None:
-#                 continue
-
-#             new_schedule[team][i] = m
-#             new_matchups[team].remove(m)
-
-#             opposing = (team, "H" if m[1] == "A" else "A")
-#             new_schedule[m[0]][i] = opposing
-#             new_matchups[m[0]].remove(opposing)
-
-#             generate_schedules(n, new_matchups, new_schedule, team)
-#             break
-
-# # Function to generate all TTPs of size n
-# def generate_TTP(n):
-#     # Initialaize matchups array
-#     matchups = [[] for _ in range(n)]
-
-#     # Generate all possible matchups
-#     for i in range(n):
-#         for j in range(n):
-#             if i != j:
-#                 # Numpy append matchup away and home to row i
-#                 matchups[i].append((j, "H"))
-#                 matchups[i].append((j, "A"))
-    
-#     # print("TTP for %d teams:" % n)
-#     # for i in range(n):
-#     #     print("Team %d: %s" % (i, matchups[i]))
-                
-#     # Generate all possible TTP schedules
-#     generate_schedules(n, matchups, np.array([np.empty((n-1)*2, dtype=object) for _ in range(n)]))
-
 def counter():
     global COUNT
     COUNT += 1
