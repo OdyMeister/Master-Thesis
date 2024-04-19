@@ -1,39 +1,16 @@
 import sys
-import numpy as np
-import copy
+import old
+from debug import *
 
-COUNT = 0
-
-# Debugging function to count the number of times a function is called
-def counter(print=True):
-    global COUNT
-    COUNT += 1
-    if print:
-        print(COUNT)
+# Generate all possible matchups of teams
+def generate_matchups(n, matchups):
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                matchups.append((i, j))
 
 
-# Debugging function to print the schedules
-def print_schedules(n, schedules, first=20):
-    print("First %d TTP schedules (out of %d) for %d teams:" % (first, len(schedules), n))
-    for schedule in schedules[:first]:
-        print("", schedule)
-
-
-# Debugging function to print the all possible matchups
-def print_matchups(matchups, first=20):
-    print("First %d matchups:" % first)
-    for m in matchups[:first]:
-        print("", m)
-
-
-# Debugging function to print the all possible rounds
-def print_rounds(rounds, first=20):
-    print("First %d rounds:" % first)
-    for r in list(rounds)[:first]:
-        print("", tuple(r))
-
-
-# Function to generate all possible rows
+# Function to generate all possible rounds given the set of matchups
 def generate_rounds(n, matchups, rounds, round=set()):
     if len(round) == n // 2:
         rounds.add(frozenset(round))
@@ -58,49 +35,71 @@ def generate_rounds(n, matchups, rounds, round=set()):
         generate_rounds(n, new_matchups, rounds, new_round)
 
 
-# Generate all possible matchups
-def generate_matchups(n, matchups):
-    for i in range(n):
-        for j in range(n):
-            if i != j:
-                matchups.append((i, j))
+# Function which removes rounds with duplicate matchups
+def remove_duplicates(round, rounds, new_rounds):
+    for r in rounds:
+        duplicate = False
+        for m in r:
+            if m in round:
+                duplicate = True
+                break
+        if not duplicate:
+            new_rounds.append(r)
+
+
+# Function to check if a team plays the same team back-to-back
+def prevent_back_to_back(round, prev_round):
+    for m in round:
+        if (m[1], m[0]) in prev_round:
+            return True
+    return False
+
+
+# Function to check if a team plays at home or away three times in a row
+def prevent_three_in_a_row(round, prev_rounds):
+    for m in round:
+        countA = 0
+        countB = 0
+
+        for r in prev_rounds:
+            for p in r:
+                if m[0] == p[0]:
+                    countA += 1
+                if m[1] == p[1]:
+                    countB += 1
+
+        if countA == 2 or countB == 2:
+            return True
+    return False
 
 
 # Generate all possible schedules given all possible rounds
-# def generate_schedule(n, rounds, schedules, schedule=[]):
-
-
-
-def generate_schedules(n, matchups, schedules, schedule=[]):
-    if len(schedule) is (n-1) * n:
+def generate_schedules(n, rounds, schedules, schedule=[]):
+    if len(schedule) == (n - 1) * 2:
         schedules.append(schedule)
         return
 
-    prev = []
-    index = len(schedule) % (n // 2)
-
-    if index != 0:
-        temp = schedule[-index:]
-        for t in temp:
-            prev.append(t[0])
-            prev.append(t[1])
-
-    for m in matchups:
-        if len(prev) > 0 and (m[0] in prev or m[1] in prev):
+    for round in rounds:
+        if prevent_back_to_back(round, schedule[-1]) if schedule else False:
             continue
 
-        new_matchups = matchups.copy()
-        new_matchups.remove(m)
+        if prevent_three_in_a_row(round, schedule[-2:]) if len(schedule) >= 2 else False:
+            continue
+
+        new_rounds = []
         new_schedule = schedule.copy()
-        new_schedule.append(m)
+        new_schedule.append(round)
 
-        generate_schedules(n, new_matchups, schedules, new_schedule)
+        remove_duplicates(round, rounds, new_rounds)
+        
+        generate_schedules(n, new_rounds, schedules, new_schedule)
 
 
+# Main function to generate all possible TTP schedules
 def generate_TTP(n):
     schedules = []
-    rounds = set()
     matchups = []
+    rounds = set()
 
     generate_matchups(n, matchups)
     print_matchups(matchups)
@@ -108,7 +107,7 @@ def generate_TTP(n):
     generate_rounds(n, matchups, rounds)
     print_rounds(rounds)
 
-    generate_schedules(n, matchups, schedules)
+    generate_schedules(n, rounds, schedules)
     print_schedules(n, schedules, 5)
 
 
