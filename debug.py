@@ -8,9 +8,14 @@ def counter(print=True):
         print(COUNT)
 
 
+# Debugging function to get value of the counter
+def get_count():
+    return COUNT
+
+
 # Debugging function to print the count if counter() is not continually printing
 def print_count():
-    print(COUNT)
+    print("Count:", COUNT)
 
 
 # Debugging function to show progress of a function

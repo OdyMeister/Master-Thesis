@@ -1,5 +1,5 @@
 import sys
-import old
+import multiprocessing
 from debug import *
 
 # Generate all possible matchups of teams
@@ -31,7 +31,6 @@ def generate_rounds(n, matchups, rounds, round=set()):
         new_matchups.remove(m)
         new_round = round.copy()
         new_round.add(m)
-        # new_row.append(m)
         generate_rounds(n, new_matchups, rounds, new_round)
 
 
@@ -55,8 +54,8 @@ def prevent_back_to_back(round, prev_round):
     return False
 
 
-# Function to check if a team plays at home or away three times in a row
-def prevent_three_in_a_row(round, prev_rounds):
+# Function to check if a team plays at home or away more than three times in a row
+def prevent_four_in_a_row(round, prev_rounds):
     for m in round:
         countA = 0
         countB = 0
@@ -68,22 +67,25 @@ def prevent_three_in_a_row(round, prev_rounds):
                 if m[1] == p[1]:
                     countB += 1
 
-        if countA == 2 or countB == 2:
+        if countA == 3 or countB == 3:
             return True
     return False
 
 
 # Generate all possible schedules given all possible rounds
 def generate_schedules(n, rounds, schedules, schedule=[]):
+    print(f"rounds: {len(rounds)}, schedules: {len(schedules)}, schedule: {len(schedule)}", flush=True)
+
     if len(schedule) == (n - 1) * 2:
-        schedules.append(schedule)
+        #schedules.append(schedule)
+        counter(print=False)
         return
 
     for round in rounds:
         if prevent_back_to_back(round, schedule[-1]) if schedule else False:
             continue
 
-        if prevent_three_in_a_row(round, schedule[-2:]) if len(schedule) >= 2 else False:
+        if prevent_four_in_a_row(round, schedule[-3:]) if len(schedule) >= 3 else False:
             continue
 
         new_rounds = []
@@ -95,6 +97,14 @@ def generate_schedules(n, rounds, schedules, schedule=[]):
         generate_schedules(n, new_rounds, schedules, new_schedule)
 
 
+def parallel_generate_schedules(n, rounds, schedules):
+    pool = multiprocessing.Pool()
+    for r in rounds:
+        new_rounds = rounds.copy()
+        new_rounds.remove(r)
+        pool.apply_async(generate_schedules, (n, new_rounds, schedules, [r]))
+
+
 # Main function to generate all possible TTP schedules
 def generate_TTP(n):
     schedules = []
@@ -102,13 +112,15 @@ def generate_TTP(n):
     rounds = set()
 
     generate_matchups(n, matchups)
-    print_matchups(matchups)
+    #print_matchups(matchups)
 
     generate_rounds(n, matchups, rounds)
-    print_rounds(rounds)
+    #print_rounds(rounds)
 
     generate_schedules(n, rounds, schedules)
-    print_schedules(n, schedules, 5)
+    # parallel_generate_schedules(n, rounds, schedules)
+    print_count()
+    #print_schedules(n, schedules, 5)
 
 
 if __name__ == "__main__":
