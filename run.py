@@ -67,8 +67,8 @@ if __name__ == "__main__":
     parser.add_argument("n_end", type=int, nargs="?", help="Number of teams")
     # Optional boolean arguments
     parser.add_argument("-c", "--cannonical", action="store_true", help="Generate cannonical schedules")
-    parser.add_argument("-p", "--parallel", action="store_true", help="Enable parallel processing")
-    # Optional integer arguments
+    parser.add_argument("-p", "--parallel", action="store_true", help="Enable parallel processing") # Not implemented
+    # Optional arguments with values
     parser.add_argument("-v", "--verbose", type=int, help="Prints first VERBOSE rounds of all schedules, possible rounds and matchups")
     parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules is printed\nSet to 0 to only print the final count")
     args = parser.parse_args()
