@@ -1,7 +1,7 @@
 COUNT = 0
 
 # Debugging function to count the number of times a function is called
-def counter(print=True):
+def counter(print=False):
     global COUNT
     COUNT += 1
     if print:

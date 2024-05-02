@@ -1,0 +1,83 @@
+from TTP import *
+from debug import *
+import sys
+import argparse
+
+# Main function to generate all possible TTP schedules
+def generate_TTP(n, args=None):
+    schedules = []
+    matchups = []
+    rounds = set()
+
+    # Generate all possible matchups given n teams
+    generate_matchups(n, matchups)
+    if args.verbose:
+        print_matchups(matchups, args.verbose)
+
+    # Generate all possible rounds given all possible matchups
+    generate_rounds(n, matchups, rounds)
+    if args.verbose:
+        print_rounds(rounds, args.verbose)
+
+    # Generate all possible schedules given all possible rounds
+    if args.cannonical:
+        generate_cannonical_schedules(n, rounds, schedules, args)
+    else:
+        generate_schedules(n, rounds, schedules, args)
+    if args.verbose:
+        print_schedules(n, schedules, args.verbose)
+
+    # Print the number schedules
+    if args.count:
+        print("Final schedule count:", get_count())
+
+
+# Function to validate the arguments and their values
+def validate_arguments(args):
+    # Check if n_end is provided, if not set it equal to n_start
+    if args.n_end == None:
+        args.n_end = args.n_start
+
+    # Check if n_start or n_end is odd, TTP is only possible for even n
+    if args.n_start % 2 != 0 or args.n_end % 2 != 0:
+        print("Number of teams must be even")
+        sys.exit(1)
+    # Check if n_start is less than n_end
+    elif args.n_start > args.n_end:
+        print("n_start must be less than or equal to n_end")
+        sys.exit(1)
+    # Check if n_start is less than 4, TTP is only possible for n >= 4
+    elif args.n_start < 4:
+        print("Number of teams must be greater than or equal to 4")
+        sys.exit(1)
+    # Check if verbose is less than or equal to 0
+    elif args.verbose and args.verbose <= 0:
+        print("Verbose must be greater than 0")
+        sys.exit(1)
+    # Check if count is less than 0
+    elif args.count and args.count < 0:
+        print("Count must be greater than or equal to 0")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate all possible TTP schedules for n teams")
+    # Required arguments
+    parser.add_argument("n_start", type=int, help="Number of teams")
+    parser.add_argument("n_end", type=int, nargs="?", help="Number of teams")
+    # Optional boolean arguments
+    parser.add_argument("-c", "--cannonical", action="store_true", help="Generate cannonical schedules")
+    parser.add_argument("-p", "--parallel", action="store_true", help="Enable parallel processing")
+    # Optional integer arguments
+    parser.add_argument("-v", "--verbose", type=int, help="Prints first VERBOSE rounds of all schedules, possible rounds and matchups")
+    parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules is printed\nSet to 0 to only print the final count")
+    args = parser.parse_args()
+
+    # Validate the arguments
+    validate_arguments(args)
+
+    # Run generate_TTP for each n in the range
+    for n in range(args.n_start, args.n_end + 1, 2):
+        if args.verbose:
+            print(f"Generating TTP schedules for {n} teams")
+        generate_TTP(n, args)
