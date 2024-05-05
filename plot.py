@@ -1,0 +1,31 @@
+import matplotlib.pyplot as plt
+from calc import *
+
+
+def plot_matchups(max):
+    x = range(0, max + 1, 2)
+    y = [calc_matchups(n) for n in x]
+
+    plt.plot(x, y)
+    plt.xlabel("Teams")
+    plt.ylabel("Matchups")
+    plt.grid(alpha=0.5)
+    plt.title("Number of possible matchups given n teams")
+    plt.show()
+
+def plot_rounds(max):
+    x = range(0, max + 1, 2)
+    y = [calc_rounds(n) for n in x]
+
+    plt.plot(x, y)
+    plt.xlabel("Teams")
+    plt.ylabel("Rounds")
+    plt.grid(alpha=0.5)
+    plt.yscale("log")
+    plt.title("Number of possible rounds given n teams")
+    plt.show()
+
+
+if __name__ == "__main__":
+    plot_matchups(50)
+    plot_rounds(50)
