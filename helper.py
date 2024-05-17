@@ -41,3 +41,11 @@ def print_matchups(matchups, first=20):
     print("First %d possible matchups (out of %d):" % (first, len(matchups)))
     for m in matchups[:first]:
         print("", m)
+
+
+# Function to generate the paths for the schedules if save is provided
+def generate_paths(n, args):
+    file_name = args.save + "-" + str(n) + ".csv"
+    folder_path = "Schedules_" + args.save
+    file_path = folder_path + "/" + file_name
+    return file_name, folder_path, file_path

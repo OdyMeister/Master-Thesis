@@ -1,5 +1,5 @@
 from TTP import *
-from debug import *
+from helper import *
 import sys
 import argparse
 
@@ -9,6 +9,18 @@ def generate_TTP(n, args=None):
     schedules = []
     matchups = []
     rounds = set()
+
+    # Create the folder path if save is provided
+    if args.save != None:
+        _, folder, path = generate_paths(n, args)
+
+        # Create the folder if it doesn't exist
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        
+        # Clear the file if it already exists
+        with open(path, "w") as file:
+            file.write("")
 
     # Generate all possible matchups given n teams
     generate_matchups(n, matchups)
@@ -70,6 +82,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", type=int, help="Prints first VERBOSE rounds of all schedules, possible rounds and matchups\nSet to 0 to print all schedules, rounds and matchups")
     parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules, the count is printed\nSet to 0 to only print the final count")
     parser.add_argument("-m", "--max", type=int, help="Maximum number of schedules to generate")
+    parser.add_argument("-s", "--save", type=str, help="Save the schedules to a file")
     args = parser.parse_args()
 
     # Validate the arguments

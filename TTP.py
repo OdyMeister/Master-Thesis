@@ -1,5 +1,6 @@
-from debug import *
+from helper import *
 import random
+import os
 
 
 # Generate all possible matchups of teams
@@ -76,20 +77,35 @@ def check_constraints(schedule, current, index, n, m):
     return False
 
 
+def handle_complete_schedule(n, schedule, schedules, args):
+    # Handle the schedule if counter is provided
+    if args.count != None:
+        if args.count != 0 and get_count() % args.count == 0:
+            print("Current schedule count:", get_count())
+
+    # Handle the schedule if verbose is provided
+    if args.verbose != None:
+        schedules.append(schedule)
+
+    # Handle the schedule if save is not provided
+    if args.save != None:
+        _, _, path = generate_paths(n, args)
+
+        # Append the current schedule to the file
+        with open(path, "a") as file:
+            file.write(','.join([str(matchup) for matchup in schedule]) + "\n")
+
+
 # Generate all possible schedules given all possible matchups
 def generate_schedules(n, matchups, schedules, args, schedule=[]):
     # If the maximum number of schedules has been reached, return
-    if args and (len(schedules) == args.max or get_count() == args.max):
+    if len(schedules) == args.max or get_count() == args.max:
         return
 
     # If there are no more matchups, the schedule is complete
     if len(matchups) == 0:
-        if args and args.count != None:
-            counter()
-            if args.count != 0 and get_count() % args.count == 0:
-                print("Current schedule count:", get_count())
-        if args and args.verbose != None:
-            schedules.append(schedule)
+        counter()
+        handle_complete_schedule(n, schedule, schedules, args)
         return
     
     # Gets the index to find the matchups in the current round
