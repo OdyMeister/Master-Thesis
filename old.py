@@ -1,3 +1,39 @@
+# Function to generate all possible rounds given the set of matchups
+def generate_rounds(n, matchups, rounds, round=set()):
+    if len(round) == n // 2:
+        rounds.add(frozenset(round))
+        return
+    
+    for m in matchups:
+        duplicate = False
+
+        for r in round:
+            if m[0] in r or m[1] in r:
+                duplicate = True
+                break
+
+        if duplicate:
+            continue
+
+        new_matchups = matchups.copy()
+        new_matchups.remove(m)
+        new_round = round.copy()
+        new_round.add(m)
+        generate_rounds(n, new_matchups, rounds, new_round)
+
+
+# Function which removes rounds with duplicate matchups
+def remove_duplicates(round, rounds, new_rounds):
+    for r in rounds:
+        duplicate = False
+        for m in r:
+            if m in round:
+                duplicate = True
+                break
+        if not duplicate:
+            new_rounds.append(r)
+
+
 # Generate all possible schedules given all possible rounds
 def generate_schedules_rounds(n, rounds, schedules, args, schedule=[]):
     # If the maximum number of schedules has been reached, return

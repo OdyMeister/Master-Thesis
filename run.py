@@ -15,21 +15,18 @@ def generate_TTP(n, args=None):
     if args.verbose != None:
         print_matchups(matchups, args.verbose)
 
-    # Generate all possible rounds given all possible matchups
-    generate_rounds(n, matchups, rounds)
-    if args.verbose != None:
-        print_rounds(rounds, args.verbose)
-
     # Generate all possible schedules given all possible rounds
     if args.cannonical:
-        generate_cannonical_schedules(n, rounds, schedules, args)
+        generate_cannonical_schedules(n, matchups, schedules, args)
     else:
         generate_schedules(n, matchups, schedules, args)
+
+    # Print the schedules if verbose is provided
     if args.verbose != None:
         print_schedules(n, schedules, args.verbose)
 
     # Print the number schedules
-    if args.count != None:
+    if args.count != None and args.verbose == None:
         print(f"Final schedule count ({n} teams): {get_count()}")
 
 
