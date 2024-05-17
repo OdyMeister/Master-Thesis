@@ -1,0 +1,8 @@
+# Ignore Plots folder
+Plots/
+
+# Ignore __pycache__ directory
+__pycache__/
+
+# Ignore folders starting with "Schedules"
+Schedules*/
