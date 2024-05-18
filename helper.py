@@ -1,3 +1,6 @@
+import os
+
+
 COUNT = 0
 
 
@@ -12,6 +15,12 @@ def counter(print=False):
 # Debugging function to get value of the counter
 def get_count():
     return COUNT
+
+
+# Reset the counter
+def reset_count():
+    global COUNT
+    COUNT = 0
 
 
 # Debugging function to show progress of a function

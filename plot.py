@@ -11,6 +11,7 @@ def plot_matchups(max):
     plt.ylabel("Matchups")
     plt.grid(alpha=0.5)
     plt.title("Number of possible matchups given n teams")
+    plt.savefig("Plots/matchups.png")
     plt.show()
 
 def plot_rounds(max):
@@ -23,6 +24,7 @@ def plot_rounds(max):
     plt.grid(alpha=0.5)
     plt.yscale("log")
     plt.title("Number of possible rounds given n teams")
+    plt.savefig("Plots/rounds.png")
     plt.show()
 
 

@@ -1,6 +1,5 @@
 from helper import *
 import random
-import os
 
 
 # Generate all possible matchups of teams
@@ -9,6 +8,7 @@ def generate_matchups(n, matchups):
         for j in range(n):
             if i != j:
                 matchups.append((i, j))
+    # Matchups are shuffled to prevent a certain order of teams from occuring every time
     random.shuffle(matchups)
 
 
@@ -122,10 +122,8 @@ def generate_schedules(n, matchups, schedules, args, schedule=[]):
         if check_constraints(schedule, current, index, n, m):
             continue
 
-        new_matchups = matchups.copy()
-        new_matchups.remove(m)
-        new_schedule = schedule.copy()
-        new_schedule.append(m)
-        
+        new_matchups = [new_m for new_m in matchups if new_m != m]
+        new_schedule = [s for s in schedule] + [m]
+                
         # Generate all possible schedules given this round
         generate_schedules(n, new_matchups, schedules, args, new_schedule)

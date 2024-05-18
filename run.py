@@ -8,7 +8,6 @@ import argparse
 def generate_TTP(n, args=None):
     schedules = []
     matchups = []
-    rounds = set()
 
     # Create the folder path if save is provided
     if args.save != None:
@@ -93,3 +92,4 @@ if __name__ == "__main__":
         if args.verbose:
             print(f"\nGenerating TTP schedules for {n} teams")
         generate_TTP(n, args)
+        reset_count()
