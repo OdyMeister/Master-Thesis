@@ -4,7 +4,7 @@ import os
 COUNT = 0
 
 
-# Debugging function to count the number of times a function is called
+# Function to count the number of times a schedule is completed
 def counter(print=False):
     global COUNT
     COUNT += 1
@@ -12,7 +12,7 @@ def counter(print=False):
         print(COUNT)
 
 
-# Debugging function to get value of the counter
+# Function to get value of the counter
 def get_count():
     return COUNT
 

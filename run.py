@@ -8,6 +8,7 @@ import argparse
 def generate_TTP(n, args=None):
     schedules = []
     matchups = []
+    streaks = {}
 
     # Create the folder path if save is provided
     if args.save != None:
@@ -26,11 +27,15 @@ def generate_TTP(n, args=None):
     if args.verbose != None:
         print_matchups(matchups, args.verbose)
 
+    # Fills the streaks dict with the number of home/away games for each team
+    # and the number of back-to-back games counter
+    generate_streak_count(n, streaks)
+
     # Generate all possible schedules given all possible rounds
     if args.cannonical:
-        generate_cannonical_schedules(n, matchups, schedules, args)
+        generate_cannonical_schedules(n, matchups, streaks, schedules, args)
     else:
-        generate_schedules(n, matchups, schedules, args)
+        generate_schedules(n, matchups, streaks, schedules, args)
 
     # Print the schedules if verbose is provided
     if args.verbose != None:
@@ -39,6 +44,8 @@ def generate_TTP(n, args=None):
     # Print the number schedules
     if args.count != None and args.verbose == None:
         print(f"Final schedule count ({n} teams): {get_count()}")
+    
+    reset_count()
 
 
 # Function to validate the arguments and their values
@@ -92,4 +99,3 @@ if __name__ == "__main__":
         if args.verbose:
             print(f"\nGenerating TTP schedules for {n} teams")
         generate_TTP(n, args)
-        reset_count()
