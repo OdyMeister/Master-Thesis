@@ -3,51 +3,6 @@ from helper import *
 import sys
 import argparse
 
-
-# Main function to generate all possible TTP schedules
-def generate_TTP(n, args=None):
-    schedules = []
-    matchups = []
-    streaks = {}
-
-    # Create the folder path if save is provided
-    if args.save != None:
-        _, folder, path = generate_paths(n, args)
-
-        # Create the folder if it doesn't exist
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-        
-        # Clear the file if it already exists
-        with open(path, "w") as file:
-            file.write("")
-
-    # Generate all possible matchups given n teams
-    generate_matchups(n, matchups)
-    if args.verbose != None:
-        print_matchups(matchups, args.verbose)
-
-    # Fills the streaks dict with the number of home/away games for each team
-    # and the number of back-to-back games counter
-    generate_streak_count(n, streaks)
-
-    # Generate all possible schedules given all possible rounds
-    if args.cannonical:
-        generate_cannonical_schedules(n, matchups, streaks, schedules, args)
-    else:
-        generate_schedules(n, matchups, streaks, schedules, args)
-
-    # Print the schedules if verbose is provided
-    if args.verbose != None:
-        print_schedules(n, schedules, args.verbose)
-
-    # Print the number schedules
-    if args.count != None and args.verbose == None:
-        print(f"Final schedule count ({n} teams): {get_count()}")
-    
-    reset_count()
-
-
 # Function to validate the arguments and their values
 def validate_arguments(args):
     # Check if n_end is provided, if not set it equal to n_start
@@ -96,6 +51,4 @@ if __name__ == "__main__":
 
     # Run generate_TTP for each n in the range
     for n in range(args.n_start, args.n_end + 1, 2):
-        if args.verbose:
-            print(f"\nGenerating TTP schedules for {n} teams")
         generate_TTP(n, args)
