@@ -69,10 +69,3 @@ def generate_schedules_rounds(n, rounds, schedules, args, schedule=[]):
         
         # Generate all possible schedules given this round
         generate_schedules(n, new_rounds, schedules, args, new_schedule)
-
-# Function to print the all possible rounds
-def print_rounds(rounds, first=20):
-    first = min(first, len(rounds)) if first else len(rounds)
-    print("First %d possible rounds (out of %d):" % (first, len(rounds)))
-    for r in list(rounds)[:first]:
-        print("", tuple(r))
