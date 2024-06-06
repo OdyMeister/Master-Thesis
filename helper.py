@@ -1,8 +1,6 @@
 import os
 
-
 COUNT = 0
-
 
 # Function to count the number of times a schedule is completed
 def counter(print=False):
