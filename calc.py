@@ -62,18 +62,8 @@ def verify_schedules(n, path):
             schedule = ast.literal_eval("[" + line + "]")
             verify(schedule, matchups, n, count)
             count += 1
-            #sys.exit()
 
 if __name__ == "__main__":
-    #for n in range(4, 51, 2):
-        #print(f"Teams: {n}\t Matchups: {calc_matchups(n)}\t Rounds: {calc_rounds(n)}")
-        #print(f"Teams: {n}\t DRR Schedules: {calc_drr_schedules(n)}")
-
-    # for n in range(4, 11, 2):
-    #     verify_schedules(n, f"Schedules_100k/100k-{n}.csv")
-    #     print(f"Verified schedule for {n} teams")
-
-    # sys.exit()
     count = 0
     with open("Schedules_All/All-6.csv", "r") as file:
         for line in file:
