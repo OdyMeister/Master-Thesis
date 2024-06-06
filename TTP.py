@@ -125,6 +125,7 @@ def check_constraints(schedule, streaks, n, m):
     return False
 
 
+# Function to handle completed schedules
 def handle_complete_schedule(n, schedule, schedules, args):
     # Handle the schedule if counter is provided
     if args.count != None:
@@ -135,13 +136,9 @@ def handle_complete_schedule(n, schedule, schedules, args):
     if args.verbose != None:
         schedules.append(schedule)
 
-    # Handle the schedule if save is not provided
+    # Handle the schedule if save is provided
     if args.save != None:
-        _, _, path = generate_paths(n, args)
-
-        # Append the current schedule to the file
-        with open(path, "a") as file:
-            file.write(','.join([str(matchup) for matchup in schedule]) + "\n")
+        handle_save(n, schedule, args)
 
 
 # Generate all possible schedules given all possible matchups
