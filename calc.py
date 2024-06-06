@@ -12,6 +12,12 @@ def calc_matchups(n):
 def calc_drr_schedules(n):
     return math.factorial(calc_rounds(n)) // math.factorial(calc_rounds(n) - (n-1)*2)
 
+# Calculates the number of cells in which each schedule is different
+# Should only be used with canonical schedules
+def calc_difference(n, path):
+    print("Not implemented")
+    return
+
 if __name__ == "__main__":
     for n in range(4, 51, 2):
         #print(f"Teams: {n}\t Matchups: {calc_matchups(n)}\t Rounds: {calc_rounds(n)}")
