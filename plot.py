@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from calc import *
 
 
@@ -38,6 +39,25 @@ def plot_upper_bound(max):
     plt.yscale("log")
     plt.title("Upper bound of possible schedules given n teams")
     plt.savefig("Plots/upper_bound.png")
+    plt.show()
+
+
+def plot_distances(distances, separate):
+    x = [np.mean(distances[s]) for s in distances]
+    print(x)
+
+    plt.hist(x)
+    plt.xlabel("Average distances")
+    plt.ylabel("Frequency")
+    plt.title("Distribution of average distances per schedule")
+    plt.savefig("Plots/distances per schedule.png")
+    plt.show()
+
+    plt.hist(separate)
+    plt.xlabel("Distances")
+    plt.ylabel("Frequency")
+    plt.title("Distribution of distances")
+    plt.savefig("Plots/distances.png")
     plt.show()
 
 

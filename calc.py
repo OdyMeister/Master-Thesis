@@ -2,6 +2,7 @@ import math
 import ast
 import sys
 from TTP import *
+from plot import *
 
 # Calculate the number of possible rounds for a given number of teams
 def calc_rounds(n):
@@ -63,9 +64,32 @@ def verify_schedules(n, path):
             verify(schedule, matchups, n, count)
             count += 1
 
-if __name__ == "__main__":
-    count = 0
-    with open("Schedules_All/All-6.csv", "r") as file:
+
+def calc_distance(filepath):
+    with open(filepath, "r") as file:
+        schedules = []
+        count = 0
+        distances = {}
+        distances_separate = []
+
         for line in file:
+            schedules.append(ast.literal_eval("[" + line + "]"))
+            distances[count] = []
             count += 1
-    print(count)
+        
+        for i in range(len(schedules)):
+            for j in range(i+1, len(schedules)):
+                distance = 0
+                for k in range(len(schedules[i])):
+                    if schedules[i][k] != schedules[j][k]:
+                        distance += 1
+                distances[i].append(distance)
+                distances[j].append(distance)
+                distances_separate.append(distance)
+        
+        return distances, distances_separate
+
+
+if __name__ == "__main__":
+    distances, distances_separate = calc_distance(sys.argv[1])
+    plot_distances(distances, distances_separate)
