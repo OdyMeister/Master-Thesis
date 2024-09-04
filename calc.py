@@ -65,7 +65,11 @@ def verify_schedules(n, path):
             count += 1
 
 
-def calc_distance(filepath):
+def get_current_round(schedule, n, i):
+    return
+
+
+def calc_distance(filepath, n):
     with open(filepath, "r") as file:
         schedules = []
         count = 0
@@ -73,23 +77,25 @@ def calc_distance(filepath):
         distances_separate = []
 
         for line in file:
-            schedules.append(ast.literal_eval("[" + line + "]"))
+            raw_schedule = ast.literal_eval("[" + line + "]")
+            schedule_chunks = [raw_schedule[i:i+n//2] for i in range(0, len(raw_schedule), n//2)]
+            schedules.append(schedule_chunks)
             distances[count] = []
             count += 1
         
-        for i in range(len(schedules)):
-            for j in range(i+1, len(schedules)):
+        for s in range(len(schedules)):
+            for c in range(s+1, len(schedules)):
                 distance = 0
-                for k in range(len(schedules[i])):
-                    if schedules[i][k] != schedules[j][k]:
-                        distance += 1
-                distances[i].append(distance)
-                distances[j].append(distance)
+                for r in range(len(schedules[s])):
+                    for m in schedules[s][r]:
+                        if m not in schedules[c][r]:
+                            distance += 1
+                distances[s].append(distance)
+                distances[c].append(distance)
                 distances_separate.append(distance)
         
         return distances, distances_separate
 
 
 if __name__ == "__main__":
-    distances, distances_separate = calc_distance(sys.argv[1])
-    plot_distances(distances, distances_separate)
+    print("...")
