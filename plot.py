@@ -44,10 +44,9 @@ def plot_upper_bound(max):
 
 
 def plot_distances(file_path, n):
-    distances, reduced = calc_distance(file_path, n)
+    distances, _ = calc_distance(file_path, n)
     name = file_path.split("\\")[-1].split(".")[0]
 
-    # Plot distances between all schedules
     max_dist = calc_matchups(n)
     min_dist = 2
     x_axis = range(min_dist, max_dist)
@@ -61,12 +60,17 @@ def plot_distances(file_path, n):
     plt.savefig(f"Plots/Distribution of distances {name}.png")
     plt.show()
 
-    # Plot distances between reduced schedules
+
+def plot_distances_reduced(file_path, n):
+    _, distances = calc_distance(file_path, n)
+    name = file_path.split("\\")[-1].split(".")[0]
+
     max_dist = calc_matchups(n) + 1
     min_dist = 0
+
     x_axis = range(min_dist, max_dist)
 
-    plt.hist(reduced, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
+    plt.hist(distances, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
     plt.xticks(x_axis)
     plt.xlabel("Distances")
     plt.ylabel("Frequency")
@@ -76,31 +80,12 @@ def plot_distances(file_path, n):
     plt.show()
 
 
-# def plot_distances_reduced(file_path, n):
-#     distances = calc_distance_reduced(file_path, n)
-#     name = file_path.split("\\")[-1].split(".")[0]
-
-#     max_dist = calc_matchups(n) + 1
-#     min_dist = 0
-
-#     x_axis = range(min_dist, max_dist)
-
-#     plt.hist(distances, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
-#     plt.xticks(x_axis)
-#     plt.xlabel("Distances")
-#     plt.ylabel("Frequency")
-#     plt.grid(alpha=0.5)
-#     plt.title("Distribution of distances between all schedules (disregarding home/away)")
-#     plt.savefig(f"Plots/Distribution of distances for reduced schedueles {name}.png")
-#     plt.show()
-
-
 if __name__ == "__main__":
     file_path = sys.argv[1]
     n = int(sys.argv[2])
 
     # plot_distances(file_path, n)
-    plot_distances(file_path, n)
+    plot_distances_reduced(file_path, n)
 
     # plot_matchups(50)
     # plot_rounds(50)

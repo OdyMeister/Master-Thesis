@@ -63,7 +63,7 @@ def print_matchups(matchups, first=20):
 # Generate the path names for the schedules if save is provided
 def generate_paths(n, args):
     file_name = args.save + "-" + str(n) + ".csv"
-    folder_path = "Schedules_" + args.save
+    folder_path = "Schedules/Schedules_" + args.save
     file_path = folder_path + "/" + file_name
     return file_name, folder_path, file_path
 
@@ -88,4 +88,3 @@ def handle_save(n, schedule, args):
     # Append the current schedule to the file
     with open(path, "a") as file:
         file.write(' '.join([str(matchup[0]) + ',' + str(matchup[1]) for matchup in schedule]) + "\n")
-        #file.write(' '.join([str(matchup[0]) + ',' + str(matchup[1]) for matchup in schedule]) + "\n")

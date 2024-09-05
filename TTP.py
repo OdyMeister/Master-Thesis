@@ -178,15 +178,7 @@ def generate_TTP(n, args=None):
 
     # Create the folder path if save is provided
     if args.save != None:
-        _, folder, path = generate_paths(n, args)
-
-        # Create the folder if it doesn't exist
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-        
-        # Clear the file if it already exists
-        with open(path, "w") as file:
-            file.write("")
+        init_save(n, args)
 
     # Generate all possible matchups given n teams
     generate_matchups(n, matchups)

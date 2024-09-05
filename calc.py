@@ -13,32 +13,37 @@ def calc_rounds(n):
 def calc_matchups(n):
     return n**2 - n
 
+
 # Calculate the number of possible Double Round Robbin schedules for a given number of teams
 def calc_drr_schedules(n):
     return math.factorial(calc_rounds(n)) // math.factorial(calc_rounds(n) - (n-1)*2)
 
 
+# Verifies one given schedule
 def verify(schedule, matchups, n, count):
     current = []
     prev_round1 = []
     streak = {i: {"home": 0, "away": 0} for i in range(n)}
 
+    # Goes through each matchup in the schedule and checks for violations
     for matchup in schedule:
+        # Matchups keeps track of all matchups that have not been used yet, if it is not in matchups, it has been used before
         if matchup not in matchups:
             print("Matchup used multiple times:", matchup)
         else:
             matchups.remove(matchup)
 
+        # Check if a team is playing more than three times in a row at home
         if streak[matchup[0]]["home"] == 3:
             print(f"Home streak violation: {matchup}, Schedule#: {count}")
         streak[matchup[0]]["home"] += 1
         streak[matchup[0]]["away"] = 0
 
+        # Check if a team is playing more than three times in a row on the road
         if streak[matchup[1]]["away"] == 3:
             print("Away streak violation", matchup)
         streak[matchup[1]]["away"] += 1
         streak[matchup[1]]["home"] = 0
-
         
         if len(current) < n//2:
             current.append(matchup)
@@ -54,6 +59,7 @@ def verify(schedule, matchups, n, count):
             print(f"Back-to-back matchup, prev_round: {prev_round1}, current: {current}, schedule#: {count}")
 
 
+# Verifies all schedules in a file
 def verify_schedules(n, path):
     with open(path, "r") as file:
         count = 1
@@ -65,6 +71,7 @@ def verify_schedules(n, path):
             count += 1
 
 
+# Calculate the distance between all schedules in a file
 def calc_distance(filepath, n):
     with open(filepath, "r") as file:
         schedules = []
@@ -73,7 +80,8 @@ def calc_distance(filepath, n):
 
         # Read schedules from file and convert them to a list containing each round in the schedule
         for line in file:
-            raw_schedule = ast.literal_eval("[" + line + "]")
+            matchups = "(" + line.replace(" ", "),(").replace("\n", ")")
+            raw_schedule = ast.literal_eval("[" + matchups + "]")
             schedule_chunks = [raw_schedule[i:i+n//2] for i in range(0, len(raw_schedule), n//2)]
             schedules.append(schedule_chunks)
         

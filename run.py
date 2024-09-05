@@ -43,7 +43,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", type=int, help="Prints first VERBOSE rounds of all schedules, possible rounds and matchups\nSet to 0 to print all schedules, rounds and matchups")
     parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules, the count is printed\nSet to 0 to only print the final count")
     parser.add_argument("-m", "--max", type=int, help="Maximum number of schedules to generate")
-    parser.add_argument("-s", "--save", type=str, help="Save the schedules to a file")
+    parser.add_argument("-s", "--save", type=str, help="Save the schedules to a given file")
     args = parser.parse_args()
 
     # Validate the arguments
