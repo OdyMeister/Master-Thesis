@@ -25,7 +25,7 @@ def verify(schedule, matchups, n, count):
 
     for matchup in schedule:
         if matchup not in matchups:
-            print("Matchup used multiple times", matchup)
+            print("Matchup used multiple times:", matchup)
         else:
             matchups.remove(matchup)
 
@@ -69,49 +69,30 @@ def calc_distance(filepath, n):
     with open(filepath, "r") as file:
         schedules = []
         distances = []
+        reduced = []
 
+        # Read schedules from file and convert them to a list containing each round in the schedule
         for line in file:
             raw_schedule = ast.literal_eval("[" + line + "]")
             schedule_chunks = [raw_schedule[i:i+n//2] for i in range(0, len(raw_schedule), n//2)]
             schedules.append(schedule_chunks)
         
+        # Calculate the distance between all schedules
+        # Both for the 'normal' schedules and the reduced schedules
         for s in range(len(schedules)):
             for c in range(s+1, len(schedules)):
                 distance = 0
+                reduced_distance = 0
                 for r in range(len(schedules[s])):
                     for m in schedules[s][r]:
                         if m not in schedules[c][r]:
                             distance += 1
-                distances.append(distance)
-        
-        return distances
-    
-
-def calc_distance_reduced(filepath, n):
-    with open(filepath, "r") as file:
-        schedules = []
-        distances = []
-
-        count = 1
-
-        for line in file:
-            raw_schedule = ast.literal_eval("[" + line + "]")
-            schedule_chunks = [raw_schedule[i:i+n//2] for i in range(0, len(raw_schedule), n//2)]
-            schedules.append(schedule_chunks)
-            if count % 100000 == 0:
-                print(count)
-            count += 1
-        
-        for s in range(len(schedules)):
-            for c in range(s+1, len(schedules)):
-                distance = 0
-                for r in range(len(schedules[s])):
-                    for m in schedules[s][r]:
                         if not (m in schedules[c][r] or (m[1], m[0]) in schedules[c][r]):
-                            distance += 1
+                            reduced_distance += 1
                 distances.append(distance)
+                reduced.append(reduced_distance)
         
-        return distances
+        return distances, reduced
 
 
 if __name__ == "__main__":

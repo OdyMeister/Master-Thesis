@@ -75,8 +75,8 @@ def update_streaks(m, streaks):
         streaks[m[1]] = (streaks[m[1]][0], streaks[m[1]][1]-1, (1, "away"))
 
 
-# Generate all possible cannonical schedules given all possible rounds
-def generate_cannonical_schedules(n, matchups, streaks, schedules, args, schedule=[]):
+# Generate all possible normalized schedules given all possible rounds
+def generate_normalized_schedules(n, matchups, streaks, schedules, args, schedule=[]):
     first_round = []
 
     for i in range(0, n, 2):
@@ -84,7 +84,7 @@ def generate_cannonical_schedules(n, matchups, streaks, schedules, args, schedul
         matchups.remove((i, i+1))
         update_streaks((i, i+1), streaks)
 
-    # Generate all possible schedules given this cannonical first round
+    # Generate all possible schedules given this normalized first round
     generate_schedules(n, matchups, streaks, schedules, args, first_round)
 
 
@@ -198,8 +198,8 @@ def generate_TTP(n, args=None):
     generate_streak_count(n, streaks)
 
     # Generate all possible schedules given all possible rounds
-    if args.cannonical:
-        generate_cannonical_schedules(n, matchups, streaks, schedules, args)
+    if args.normalize:
+        generate_normalized_schedules(n, matchups, streaks, schedules, args)
     else:
         generate_schedules(n, matchups, streaks, schedules, args)
 
