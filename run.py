@@ -31,7 +31,8 @@ def validate_arguments(args):
         sys.exit(1)
 
 
-if __name__ == "__main__":
+# Function to parse the arguments from the command line
+def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate all possible TTP schedules for n teams")
     # Required arguments
     parser.add_argument("n_start", type=int, help="Number of teams")
@@ -44,7 +45,13 @@ if __name__ == "__main__":
     parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules, the count is printed\nSet to 0 to only print the final count")
     parser.add_argument("-m", "--max", type=int, help="Maximum number of schedules to generate")
     parser.add_argument("-s", "--save", type=str, help="Save the schedules to a given file")
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+# Main function to run the program
+def run():
+    # Get the arguments from the command line
+    args = parse_arguments()
 
     # Validate the arguments
     validate_arguments(args)
@@ -52,3 +59,7 @@ if __name__ == "__main__":
     # Run generate_TTP for each n in the range
     for n in range(args.n_start, args.n_end + 1, 2):
         generate_TTP(n, args)
+
+
+if __name__ == "__main__":
+    run()
