@@ -78,8 +78,14 @@ def calc_distance(filepath, n):
         distances = []
         reduced = []
 
+        dest = open("Distances/Distances n6.csv", "w")
+        dest2 = open("Distances/Distances n6 reduced.csv", "w")
+
         # Read schedules from file and convert them to a list containing each round in the schedule
         for line in file:
+            # Skip empty lines, such as the last line in a file
+            if len(line) < 2:
+                continue
             matchups = "(" + line.replace(" ", "),(").replace("\n", ")")
             raw_schedule = ast.literal_eval("[" + matchups + "]")
             schedule_chunks = [raw_schedule[i:i+n//2] for i in range(0, len(raw_schedule), n//2)]
@@ -97,11 +103,16 @@ def calc_distance(filepath, n):
                             distance += 1
                         if not (m in schedules[c][r] or (m[1], m[0]) in schedules[c][r]):
                             reduced_distance += 1
-                distances.append(distance)
-                reduced.append(reduced_distance)
-        
-        return distances, reduced
+
+                # distances.append(distance)
+                # reduced.append(reduced_distance)
+
+                dest.write(f"{distance},")
+                dest2.write(f"{reduced_distance},")
+
+        #return distances, reduced
+        print("Distances calculated")
 
 
 if __name__ == "__main__":
-    print("...")
+    calc_distance(sys.argv[1], int(sys.argv[2]))
