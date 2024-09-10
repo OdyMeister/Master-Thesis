@@ -1,5 +1,9 @@
 # Ignore __pycache__ directory
 __pycache__/
 
-# Ignore folders starting with Schedules
-Schedules*/
+# Ignore folders containing data such as the schedules and distances
+Schedules/
+Distances/
+
+# Ignore the TEMP folder
+TEMP/
