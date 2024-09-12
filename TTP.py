@@ -178,7 +178,7 @@ def generate_TTP(n, args=None):
     # Create the folder path if save is provided
     # We don't do this when random is provided because 
     # otherwise the folder is created and overwitten each time
-    if args.save != None and args.random == None:
+    if args.save != None and args.random == None and args.append == None:
         init_save(n, args)
 
     # Generate all possible matchups given n teams
@@ -213,7 +213,8 @@ def handle_random(n, args):
     # Create the folder path if save is provided
     # We do this now to prevent the folder from being
     # overwritten each time generate_TTP is called
-    if args.save != None:
+    if args.save != None and args.append == None:
+        print("Test")
         init_save(n, args)
 
     # Set max to 1 to generate one schedule at a time

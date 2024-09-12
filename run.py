@@ -42,9 +42,14 @@ def validate_arguments(args):
     elif args.random and args.max:
         print("Random and max cannot be used together")
         sys.exit(1)
+    # Check whether append is provided without save
+    elif args.save == None and args.append:
+        print("Save and append cannot be used together")
+        sys.exit(1)
     # Not implemented warning for parallel processing
     elif args.parallel:
-        print("Parallel processing not implemented!!!")
+        print("Parallel processing not yet implemented!")
+        sys.exit(1)
 
 
 # Function to parse the arguments from the command line
@@ -56,6 +61,7 @@ def parse_arguments():
     # Optional boolean arguments
     parser.add_argument("-N", "--normalize", action="store_true", help="Generate normalized schedules")
     parser.add_argument("-p", "--parallel", action="store_true", help="Enable parallel processing") # Not implemented
+    parser.add_argument("--append", action="store_true", help="Append to the file instead of overwriting\nOnly works with save")
     # Optional non-boolean arguments
     parser.add_argument("-v", "--verbose", type=int, help="Prints first VERBOSE rounds of all schedules, possible rounds and matchups\nSet to 0 to print all schedules, rounds and matchups")
     parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules, the count is printed\nSet to 0 to only print the final count")
