@@ -3,6 +3,7 @@ from helper import *
 import sys
 import argparse
 
+
 # Function to validate the arguments and their values
 def validate_arguments(args):
     # Check if n_end is provided, if not set it equal to n_start
@@ -29,6 +30,21 @@ def validate_arguments(args):
     elif args.count and args.count < 0:
         print("Count must be greater than or equal to 0")
         sys.exit(1)
+    # Check if max is less than 0
+    elif args.max and args.max < 0:
+        print("Max must be greater than or equal to 0")
+        sys.exit(1)
+    # Check if random is less than 0
+    elif args.random and args.random < 0:
+        print("Random must be greater than or equal to 0")
+        sys.exit(1)
+    # Check whether random and max are both provided
+    elif args.random and args.max:
+        print("Random and max cannot be used together")
+        sys.exit(1)
+    # Not implemented warning for parallel processing
+    elif args.parallel:
+        print("Parallel processing not implemented!!!")
 
 
 # Function to parse the arguments from the command line
@@ -45,6 +61,7 @@ def parse_arguments():
     parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules, the count is printed\nSet to 0 to only print the final count")
     parser.add_argument("-m", "--max", type=int, help="Maximum number of schedules to generate")
     parser.add_argument("-s", "--save", type=str, help="Save the schedules to a given file")
+    parser.add_argument("-r", "--random", type=int, help="Generate random schedules")
     return parser.parse_args()
 
 
@@ -58,7 +75,7 @@ def run():
 
     # Run generate_TTP for each n in the range
     for n in range(args.n_start, args.n_end + 1, 2):
-        generate_TTP(n, args)
+        main(n, args)
 
 
 if __name__ == "__main__":

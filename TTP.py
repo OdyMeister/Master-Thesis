@@ -47,7 +47,6 @@ def check__future_streak_violation(m, streaks):
     if (x + s) / 3 > y + 1:
         #print(f"Future away streak violation for team {m[1]}, \t {streaks[m[1]]} \t x: {x}, y: {y}, s: {s}")
         return True
-
     return False
 
 
@@ -170,20 +169,20 @@ def generate_schedules(n, matchups, streaks, schedules, args, schedule=[]):
         generate_schedules(n, new_matchups, new_streaks, schedules, args, new_schedule)
 
 
-# Main function to generate all possible TTP schedules
+# Function to generate valid TTP schedules
 def generate_TTP(n, args=None):
     schedules = []
     matchups = []
     streaks = {}
 
     # Create the folder path if save is provided
-    if args.save != None:
+    # We don't do this when random is provided because 
+    # otherwise the folder is created and overwitten each time
+    if args.save != None and args.random == None:
         init_save(n, args)
 
     # Generate all possible matchups given n teams
     generate_matchups(n, matchups)
-    if args.verbose != None:
-        print_matchups(matchups, args.verbose)
 
     # Fills the streaks dict with the number of home/away games for each team
     # and the number of back-to-back games counter
@@ -203,4 +202,31 @@ def generate_TTP(n, args=None):
     if args.count != None and args.verbose == None:
         print(f"Final schedule count ({n} teams): {get_count()}")
     
+    # Reset the counter in case of consecutive runs
     reset_count()
+
+
+# Function to handle the random argument
+# Simply uses generate_TTP to generate one random schedule by setting max to 1
+# This is repeated random times, to generate a set of random schedules
+def handle_random(n, args):
+    # Create the folder path if save is provided
+    # We do this now to prevent the folder from being
+    # overwritten each time generate_TTP is called
+    if args.save != None:
+        init_save(n, args)
+
+    # Set max to 1 to generate one schedule at a time
+    args.max = 1
+
+    # Generate a "args.random" amount of schedules
+    for _ in range(args.random):
+        generate_TTP(n, args)
+
+
+# Main function to run the program
+def main(n, args=None):
+    if args.random != None:
+        handle_random(n, args)
+    else:
+        generate_TTP(n, args)

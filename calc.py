@@ -4,6 +4,7 @@ import sys
 from TTP import *
 from plot import *
 
+
 # Calculate the number of possible rounds for a given number of teams
 def calc_rounds(n):
     return math.factorial(n) // math.factorial(n//2)
@@ -75,11 +76,10 @@ def verify_schedules(n, path):
 def calc_distance(filepath, n):
     with open(filepath, "r") as file:
         schedules = []
-        distances = []
-        reduced = []
+        name = filepath.split("\\")[-1].split(".")[0]
 
-        dest = open("Distances/Distances n6.csv", "w")
-        dest2 = open("Distances/Distances n6 reduced.csv", "w")
+        dest = open(f"Distances/Distances {name}.csv", "w")
+        dest2 = open(f"Distances/Distances Reduced {name}.csv", "w")
 
         # Read schedules from file and convert them to a list containing each round in the schedule
         for line in file:
