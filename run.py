@@ -23,8 +23,8 @@ def validate_arguments(args):
         print("Number of teams must be greater than or equal to 4")
         sys.exit(1)
     # Check if verbose is less than or equal to 0
-    elif args.verbose != None and args.verbose < 0:
-        print("Verbose must be greater than or equal to 0")
+    elif args.verbose != None and args.verbose <= 0:
+        print("Verbose must be greater than 0")
         sys.exit(1)
     # Check if count is less than 0
     elif args.count and args.count < 0:
@@ -56,18 +56,18 @@ def validate_arguments(args):
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate all possible TTP schedules for n teams")
     # Required arguments
-    parser.add_argument("n_start", type=int, help="Number of teams")
-    parser.add_argument("n_end", type=int, nargs="?", help="Number of teams")
+    parser.add_argument("n_start", type=int, help="Number of teams for schedules should be generated, must be even. If n_end is not provided, schedules are generated for n_start only")
+    parser.add_argument("n_end", type=int, nargs="?", help="Upper bound for range of teams for which schedules should be generated, must be even. If not provided, schedules are generated for n_start only")
     # Optional boolean arguments
     parser.add_argument("-N", "--normalize", action="store_true", help="Generate normalized schedules")
-    parser.add_argument("-p", "--parallel", action="store_true", help="Enable parallel processing") # Not implemented
-    parser.add_argument("--append", action="store_true", help="Append to the file instead of overwriting\nOnly works with save")
+    parser.add_argument("-p", "--parallel", action="store_true", help="Enable parallel processing (not implemented)") # Not implemented
+    parser.add_argument("--append", action="store_true", help="Append schedules to the file instead of overwriting. Only works with --save")
     # Optional non-boolean arguments
-    parser.add_argument("-v", "--verbose", type=int, help="Prints first VERBOSE rounds of all schedules, possible rounds and matchups\nSet to 0 to print all schedules, rounds and matchups")
-    parser.add_argument("--count", type=int, help="Print the count of schedules generated\nEvery COUNT schedules, the count is printed\nSet to 0 to only print the final count")
+    parser.add_argument("-v", "--verbose", type=int, help="Prints first VERBOSE rounds of all schedules, possible rounds and matchups")
+    parser.add_argument("--count", type=int, help="Print the count of schedules generated. Every COUNT schedules, the count is printed. Set to 0 to only print the final count")
     parser.add_argument("-m", "--max", type=int, help="Maximum number of schedules to generate")
-    parser.add_argument("-s", "--save", type=str, help="Save the schedules to a given file")
-    parser.add_argument("-r", "--random", type=int, help="Generate random schedules")
+    parser.add_argument("-s", "--save", type=str, help="Saves the schedules to a given file")
+    parser.add_argument("-r", "--random", type=int, help="Generate random schedules by restarting the algorithm with a different initial matchup order each time")
     return parser.parse_args()
 
 

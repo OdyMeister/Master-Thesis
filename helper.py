@@ -27,11 +27,11 @@ def progress():
 
 
 # Prints the schedules, each round seperated by a new line
-def print_schedules(n, schedules, first=20):
-    first = min(first, len(schedules)) if first else len(schedules)
-    print("First %d possible TTP schedules (out of %d):" % (first, len(schedules)))
+def print_schedules(n, schedules):
+    first = len(schedules)
+    print(f"First {first} possible TTP schedules:")
 
-    for schedule in schedules[:first]:
+    for schedule in schedules:
         count = 0
         for matchup in schedule:
             print("", matchup, end="")

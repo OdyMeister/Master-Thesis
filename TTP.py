@@ -1,5 +1,6 @@
 from helper import *
 import random
+import numpy as np
 
 
 # Generate all possible matchups of teams
@@ -9,7 +10,7 @@ def generate_matchups(n, matchups):
             if i != j:
                 matchups.append((i, j))
     # Matchups are shuffled to prevent a certain order of teams from occuring every time
-    random.shuffle(matchups)
+    np.random.shuffle(matchups)
 
 
 # Function to check if a team plays the same team back-to-back
@@ -132,7 +133,7 @@ def handle_complete_schedule(n, schedule, schedules, args):
             print("Current schedule count:", get_count())
 
     # Handle the schedule if verbose is provided
-    if args.verbose != None:
+    if args.verbose != None and len(schedules) < args.verbose:
         schedules.append(schedule)
 
     # Handle the schedule if save is provided
@@ -178,7 +179,7 @@ def generate_TTP(n, args=None):
     # Create the folder path if save is provided
     # We don't do this when random is provided because 
     # otherwise the folder is created and overwitten each time
-    if args.save != None and args.random == None and args.append == None:
+    if args.save != None and args.random == None and not args.append:
         init_save(n, args)
 
     # Generate all possible matchups given n teams
@@ -196,7 +197,7 @@ def generate_TTP(n, args=None):
 
     # Print the schedules if verbose is provided
     if args.verbose != None:
-        print_schedules(n, schedules, args.verbose)
+        print_schedules(n, schedules)
 
     # Print the number schedules
     if args.count != None and args.verbose == None:
@@ -213,11 +214,11 @@ def handle_random(n, args):
     # Create the folder path if save is provided
     # We do this now to prevent the folder from being
     # overwritten each time generate_TTP is called
-    if args.save != None and args.append == None:
-        print("Test")
+    if args.save != None and not args.append:
         init_save(n, args)
 
     # Set max to 1 to generate one schedule at a time
+    # This is why args.max can't be used for random schedules
     args.max = 1
 
     # Generate a "args.random" amount of schedules

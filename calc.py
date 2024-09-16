@@ -114,5 +114,33 @@ def calc_distance(filepath, n):
         print("Distances calculated")
 
 
+def calc_uniformity(filepath):
+    with open(filepath, "r") as file:
+        matchup_freq = {}
+
+
+        count = 0
+
+        # Read schedules from file and convert them to a list containing each round in the schedule
+        for line in file:
+            count += 1
+            # Skip empty lines, such as the last line in a file
+            if len(line) < 2:
+                continue
+            if matchup_freq.get(line) == None:
+                matchup_freq[line] = 1
+            else:
+                matchup_freq[line] += 1
+
+        print(count)
+
+        for key in matchup_freq.keys():
+            if matchup_freq[key] > 25000:
+                print(key)
+        
+        return matchup_freq
+
+
 if __name__ == "__main__":
-    calc_distance(sys.argv[1], int(sys.argv[2]))
+    #calc_distance(sys.argv[1], int(sys.argv[2]))
+    calc_uniformity(sys.argv[1])
