@@ -128,7 +128,7 @@ def check_constraints(schedule, streaks, n, m):
 # Function to handle completed schedules
 def handle_complete_schedule(n, schedule, schedules, args):
     # Handle the schedule if counter is provided
-    if args.count != None:
+    if args.count != None and args.random == None:
         if args.count != 0 and get_count() % args.count == 0:
             print("Current schedule count:", get_count())
 
@@ -222,7 +222,10 @@ def handle_random(n, args):
     args.max = 1
 
     # Generate a "args.random" amount of schedules
-    for _ in range(args.random):
+    for i in range(args.random):
+        if args.count != None and args.count != 0 and i % args.count == 0:
+            print("Current schedule count:", i)
+
         generate_TTP(n, args)
 
 

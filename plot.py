@@ -92,11 +92,11 @@ def plot_uniformity_4():
 
     plt.figure(figsize=(16, 6))
     plt.scatter(range(0, len(freq)), freq, color='orange', alpha=0.9, edgecolor='black', linewidth=1)
-    plt.xlabel("Distance frequencies")
+    plt.xlabel("Schedules frequencies")
     plt.ylabel("Frequency")
     plt.grid(alpha=0.5)
-    plt.title("Uniformity of randomly generated initial schedules for n=6")
-    plt.savefig("Plots/Uniformity_n=6.png")
+    plt.title("Frequency of 10 million randomly generated initial schedules (n=4)")
+    plt.savefig("Plots/Uniformity_n=4.png")
     plt.show()
 
 
@@ -120,13 +120,13 @@ def plot_uniformity_n():
 
 
 if __name__ == "__main__":
-    # file_path = sys.argv[1]
-    # n = int(sys.argv[2])
-    # plot_distances(file_path, n)
+    file_path = sys.argv[1]
+    n = int(sys.argv[2])
+    plot_distances(file_path, n)
     # plot_distances_reduced(file_path, n)
 
     # plot_uniformity_4()
-    plot_uniformity_n()
+    # plot_uniformity_n()
 
     # plot_matchups(50)
     # plot_rounds(50)
