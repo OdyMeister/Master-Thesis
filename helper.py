@@ -60,6 +60,14 @@ def print_matchups(matchups, first=20):
     print()
 
 
+# Save the current count to a file
+def save_count(n, args, prefix=""):
+    path = prefix + "Count/Count_" + str(n) + ".txt"
+
+    with open(path, "w") as file:
+        file.write(str(get_count()))
+
+
 # Generate the path names for the schedules if save is provided
 def generate_paths(n, args):
     file_name = args.save + "-" + str(n) + ".csv"

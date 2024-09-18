@@ -81,6 +81,7 @@ def run():
 
     # Run generate_TTP for each n in the range
     for n in range(args.n_start, args.n_end + 1, 2):
+        print(f"Generating schedules for {n} teams")
         main(n, args)
 
 

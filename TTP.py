@@ -131,6 +131,7 @@ def handle_complete_schedule(n, schedule, schedules, args):
     if args.count != None and args.random == None:
         if args.count != 0 and get_count() % args.count == 0:
             print("Current schedule count:", get_count())
+            save_count(n, args, prefix="")
 
     # Handle the schedule if verbose is provided
     if args.verbose != None and len(schedules) < args.verbose:
@@ -202,6 +203,7 @@ def generate_TTP(n, args=None):
     # Print the number schedules
     if args.count != None and args.verbose == None:
         print(f"Final schedule count ({n} teams): {get_count()}")
+        save_count(n, args, prefix="")
     
     # Reset the counter in case of consecutive runs
     reset_count()

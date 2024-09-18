@@ -135,7 +135,7 @@ def calc_uniformity(filepath):
         print(count)
 
         for key in matchup_freq.keys():
-            if matchup_freq[key] > 25000:
+            if matchup_freq[key] > 20:
                 print(key)
         
         return matchup_freq
