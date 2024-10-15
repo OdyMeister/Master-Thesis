@@ -45,44 +45,25 @@ def plot_upper_bound(max):
     plt.show()
 
 
-def plot_distances(file_path, n):
+def plot_diff_norm(file_path, n):
     distances = [int(dist) for dist in open(file_path, "r").read()[:-1].split(",")]
     name = file_path.split("\\")[-1].split(".")[0].split(" ")[-1]
 
-    max_dist = calc_matchups(n)
+    max_dist = calc_matchups(n) - (n//2)
     min_dist = min(distances)
 
-    x_axis = range(min_dist, max_dist)
-
-
-    plt.figure(figsize=(12, 6))
-    hist = plt.hist(distances, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
-    plt.xticks(x_axis)
-    plt.xlabel("Distances")
-    plt.ylabel("Frequency")
-    plt.grid(alpha=0.5)
-    plt.title("Distribution of distances between all schedules")
-    plt.savefig(f"Plots/Distances {name}.png")
-    plt.show()
-
-
-def plot_distances_reduced(file_path, n):
-    distances = [int(dist) for dist in open(file_path, "r").read()[:-1].split(",")]
-    name = file_path.split("\\")[-1].split(".")[0].split(" ")[-1]
-
-    max_dist = calc_matchups(n)
-    min_dist = min(distances)
-
-    x_axis = range(min_dist, max_dist)
+    x_axis = range(min_dist, max_dist + 2)
 
     plt.figure(figsize=(12, 6))
-    hist = plt.hist(distances, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
+    plt.hist(distances, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
+    plt.axvline(x=max_dist, color='red', linestyle='--', linewidth=2, label="Max possible difference")
     plt.xticks(x_axis)
-    plt.xlabel("Distances")
+    plt.xlabel("Differences between normalized schedules")
     plt.ylabel("Frequency")
     plt.grid(alpha=0.5)
-    plt.title("Distribution of distances between all schedules (disregarding home/away)")
-    plt.savefig(f"Plots/Reduced Distances {name}.png")
+    plt.title(f"Distribution of differences between normalized schedules for n = {n}")
+    plt.savefig(f"Plots/Diff-Norm_{name}.png")
+    plt.legend()
     plt.show()
 
 
@@ -120,13 +101,12 @@ def plot_uniformity_n():
 
 
 if __name__ == "__main__":
-    # file_path = sys.argv[1]
-    # n = int(sys.argv[2])
-    # plot_distances(file_path, n)
-    # plot_distances_reduced(file_path, n)
+    file_path = sys.argv[1]
+    n = int(sys.argv[2])
+    plot_diff_norm(file_path, n)
 
     # plot_uniformity_4()
-    plot_uniformity_n()
+    # plot_uniformity_n()
 
     # plot_matchups(50)
     # plot_rounds(50)

@@ -73,7 +73,7 @@ def verify_schedules(n, path):
 
 
 # Calculate the distance between all schedules in a file
-def calc_distance(filepath, n):
+def calc_diff(filepath, n):
     with open(filepath, "r") as file:
         schedules = []
         name = filepath.split("\\")[-1].split(".")[0]
@@ -142,5 +142,7 @@ def calc_uniformity(filepath):
 
 
 if __name__ == "__main__":
-    #calc_distance(sys.argv[1], int(sys.argv[2]))
-    calc_uniformity(sys.argv[1])
+    filepath = sys.argv[1]
+    n = int(sys.argv[2])
+    calc_diff(filepath, n)
+    #calc_uniformity(sys.argv[1])
