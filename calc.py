@@ -79,7 +79,7 @@ def calc_diff(filepath, n):
         name = filepath.split("\\")[-1].split(".")[0]
 
         dest = open(f"Distances/Distances {name}.csv", "w")
-        dest2 = open(f"Distances/Distances Reduced {name}.csv", "w")
+        dest_reduced = open(f"Distances/Distances Reduced {name}.csv", "w")
 
         # Read schedules from file and convert them to a list containing each round in the schedule
         for line in file:
@@ -108,17 +108,15 @@ def calc_diff(filepath, n):
                 # reduced.append(reduced_distance)
 
                 dest.write(f"{distance},")
-                dest2.write(f"{reduced_distance},")
+                dest_reduced.write(f"{reduced_distance},")
 
         #return distances, reduced
         print("Distances calculated")
 
 
-def calc_uniformity(filepath):
+def calc_uniformity(filepath, limit=0):
     with open(filepath, "r") as file:
         matchup_freq = {}
-
-
         count = 0
 
         # Read schedules from file and convert them to a list containing each round in the schedule
@@ -132,11 +130,10 @@ def calc_uniformity(filepath):
             else:
                 matchup_freq[line] += 1
 
-        print(count)
-
         for key in matchup_freq.keys():
-            if matchup_freq[key] > 20:
-                print(key)
+            if matchup_freq[key] > limit and limit != 0:
+                with open("Distances/Top-8_n=4.csv", "a") as dest:
+                    dest.write(key)
         
         return matchup_freq
 
@@ -145,4 +142,4 @@ if __name__ == "__main__":
     filepath = sys.argv[1]
     n = int(sys.argv[2])
     calc_diff(filepath, n)
-    #calc_uniformity(sys.argv[1])
+    # calc_uniformity(filepath)

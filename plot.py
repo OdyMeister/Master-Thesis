@@ -45,7 +45,7 @@ def plot_upper_bound(max):
     plt.show()
 
 
-def plot_diff_norm(file_path, n):
+def plot_diff_norm(file_path, n, plot_ID, title_add=""):
     distances = [int(dist) for dist in open(file_path, "r").read()[:-1].split(",")]
     name = file_path.split("\\")[-1].split(".")[0].split(" ")[-1]
 
@@ -61,9 +61,22 @@ def plot_diff_norm(file_path, n):
     plt.xlabel("Differences between normalized schedules")
     plt.ylabel("Frequency")
     plt.grid(alpha=0.5)
-    plt.title(f"Distribution of differences between normalized schedules for n = {n}")
-    plt.savefig(f"Plots/Diff-Norm_{name}.png")
     plt.legend()
+
+    if plot_ID == 0:
+        plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}")
+        plt.savefig(f"Plots/Diff-Norm_{name}.png")
+    elif plot_ID == 1:
+        plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}, disregarding home/away assignments")
+        plt.savefig(f"Plots/Diff-Norm-Reduced_{name}.png")
+    # Special cases
+    elif plot_ID == 2:
+        plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}")
+        plt.savefig(f"Plots/Diff-Top8_{name}.png")
+    elif plot_ID == 3:
+        plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}, disregarding home/away assignments")
+        plt.savefig(f"Plots/Diff-Reduced-Top8_{name}.png")
+
     plt.show()
 
 
@@ -103,7 +116,9 @@ def plot_uniformity_n():
 if __name__ == "__main__":
     file_path = sys.argv[1]
     n = int(sys.argv[2])
-    plot_diff_norm(file_path, n)
+    plot_ID = int(sys.argv[3])
+    title_add = sys.argv[4]
+    plot_diff_norm(file_path, n, plot_ID, title_add)
 
     # plot_uniformity_4()
     # plot_uniformity_n()
