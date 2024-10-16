@@ -66,7 +66,7 @@ def plot_diff_norm(file_path, n, plot_ID, title_add=""):
     plt.xlabel("Differences between normalized schedules")
     plt.ylabel("Frequency")
     plt.grid(alpha=0.5)
-    plt.legend()
+    plt.legend(loc='upper left', bbox_to_anchor=(0,1))
 
     if plot_ID == 0:
         plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}")
