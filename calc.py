@@ -80,6 +80,7 @@ def calc_diff(filepath, n):
 
         dest = open(f"Distances/Distances {name}.csv", "w")
         dest_reduced = open(f"Distances/Distances Reduced {name}.csv", "w")
+        dest_teamless = open(f"Distances/Distances Teamless {name}.csv", "w")
 
         # Read schedules from file and convert them to a list containing each round in the schedule
         for line in file:
@@ -97,6 +98,8 @@ def calc_diff(filepath, n):
             for c in range(s+1, len(schedules)):
                 distance = 0
                 reduced_distance = 0
+                teamless_distance = 0
+
                 for r in range(len(schedules[s])):
                     for m in schedules[s][r]:
                         if m not in schedules[c][r]:
@@ -104,11 +107,22 @@ def calc_diff(filepath, n):
                         if not (m in schedules[c][r] or (m[1], m[0]) in schedules[c][r]):
                             reduced_distance += 1
 
-                # distances.append(distance)
-                # reduced.append(reduced_distance)
+                        # Comparing each round to see if each team has the same home/away assignment
+                        # The difference is thus round based, not matchup based
+                        teamless = True
+                        for m2 in schedules[c][r]:
+                            if m[0] == m2[0]:
+                                teamless = False
+                                break
+                            if m[1] == m2[1]:
+                                teamless = False
+                                break
+                    if teamless:
+                        teamless_distance += 1
 
                 dest.write(f"{distance},")
                 dest_reduced.write(f"{reduced_distance},")
+                dest_teamless.write(f"{teamless_distance},")
 
         #return distances, reduced
         print("Distances calculated")

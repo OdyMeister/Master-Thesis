@@ -52,6 +52,11 @@ def plot_diff_norm(file_path, n, plot_ID, title_add=""):
     max_dist = calc_matchups(n) - (n//2)
     min_dist = min(distances)
 
+    # Plot type 2 is round based, so the max distance is the number of rounds - 1 for normalized schedules
+    if plot_ID == 2:
+        max_dist = 2 * (n-1) - 1
+        print(max_dist)
+
     x_axis = range(min_dist, max_dist + 2)
 
     plt.figure(figsize=(12, 6))
@@ -69,11 +74,14 @@ def plot_diff_norm(file_path, n, plot_ID, title_add=""):
     elif plot_ID == 1:
         plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}, disregarding home/away assignments")
         plt.savefig(f"Plots/Diff-Norm-Reduced_{name}.png")
-    # Special cases
     elif plot_ID == 2:
+        plt.title(f"Distribution of differences between rounds in {title_add}normalized schedules for n = {n}, only considering home/away assignments")
+        plt.savefig(f"Plots/Diff-Norm-Teamlesss_{name}.png")
+    # Special cases
+    elif plot_ID == 3:
         plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}")
         plt.savefig(f"Plots/Diff-Top8_{name}.png")
-    elif plot_ID == 3:
+    elif plot_ID == 4:
         plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}, disregarding home/away assignments")
         plt.savefig(f"Plots/Diff-Reduced-Top8_{name}.png")
 
