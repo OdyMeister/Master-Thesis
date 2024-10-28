@@ -46,44 +46,49 @@ def plot_upper_bound(max):
 
 
 def plot_diff_norm(file_path, n, plot_ID, title_add=""):
-    distances = [int(dist) for dist in open(file_path, "r").read()[:-1].split(",")]
+    differances = [int(diff) for diff in open(file_path, "r").read()[:-1].split(",")]
     name = file_path.split("\\")[-1].split(".")[0].split(" ")[-1]
 
-    max_dist = calc_matchups(n) - (n//2)
-    min_dist = min(distances)
+    fontsize = 18
 
-    # Plot type 2 is round based, so the max distance is the number of rounds - 1 for normalized schedules
+    max_diff = calc_matchups(n) - (n//2)
+    min_diff = min(differances)
+    mean_diff = np.mean(differances)
+
+    # Plot type 2 is round based, so the max diffance is the number of rounds - 1 for normalized schedules
     if plot_ID == 2:
-        max_dist = 2 * (n-1) - 1
-        print(max_dist)
+        max_diff = 2 * (n-1) - 1
+        print(max_diff)
 
-    x_axis = range(min_dist, max_dist + 2)
+    x_axis = range(min_diff, max_diff + 2)
 
     plt.figure(figsize=(12, 6))
-    plt.hist(distances, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
-    plt.axvline(x=max_dist, color='red', linestyle='--', linewidth=2, label="Max possible difference")
+    plt.hist(differances, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
+    plt.axvline(x=max_diff, color='red', linestyle='--', linewidth=2, label="Max possible difference")
+    plt.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label="Mean difference")
     plt.xticks(x_axis)
-    plt.xlabel("Differences between normalized schedules")
-    plt.ylabel("Frequency")
+    plt.xlabel("Differences between normalized schedules", fontsize=fontsize)
+    plt.ylabel("Frequency", fontsize=fontsize)
     plt.grid(alpha=0.5)
     plt.legend(loc='upper left', bbox_to_anchor=(0,1))
 
     if plot_ID == 0:
-        plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}")
-        plt.savefig(f"Plots/Diff-Norm_{name}.png")
+        plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}", fontsize=fontsize)
+        plt.savefig(f"Plots/Diff-Norm_{name}.png", bbox_inches='tight')
     elif plot_ID == 1:
-        plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}, disregarding home/away assignments")
-        plt.savefig(f"Plots/Diff-Norm-Reduced_{name}.png")
+        plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}\nDisregarding home/away assignments", fontsize=fontsize)
+        plt.savefig(f"Plots/Diff-Norm-Reduced_{name}.png", bbox_inches='tight')
     elif plot_ID == 2:
-        plt.title(f"Distribution of differences between rounds in {title_add}normalized schedules for n = {n}, only considering home/away assignments")
-        plt.savefig(f"Plots/Diff-Norm-Teamlesss_{name}.png")
+        plt.title(f"Distribution of differences between rounds in {title_add}normalized schedules for n = {n}\nOnly considering home/away assignments", fontsize=fontsize)
+        plt.legend(loc='upper left', bbox_to_anchor=(0.75,1))
+        plt.savefig(f"Plots/Diff-Norm-Teamlesss_{name}.png", bbox_inches='tight')
     # Special cases
     elif plot_ID == 3:
-        plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}")
-        plt.savefig(f"Plots/Diff-Top8_{name}.png")
+        plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}", fontsize=fontsize)
+        plt.savefig(f"Plots/Diff-Top8_{name}.png", bbox_inches='tight')
     elif plot_ID == 4:
-        plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}, disregarding home/away assignments")
-        plt.savefig(f"Plots/Diff-Reduced-Top8_{name}.png")
+        plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}\nDisregarding home/away assignments", fontsize=fontsize)
+        plt.savefig(f"Plots/Diff-Reduced-Top8_{name}.png", bbox_inches='tight')
 
     plt.show()
 
