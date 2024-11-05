@@ -63,6 +63,7 @@ def prevent_four_in_a_row(m, streaks):
     return False
 
 
+# Updates the current home/away streaks for the two teams in the current matchup
 def update_streaks(m, streaks):
     if streaks[m[0]][2][1] == "home":
         streaks[m[0]] = (streaks[m[0]][0]-1, streaks[m[0]][1], (streaks[m[0]][2][0] + 1, "home"))

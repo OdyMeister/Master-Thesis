@@ -73,20 +73,25 @@ def plot_diff_norm(file_path, n, plot_ID, title_add=""):
     plt.legend(loc='upper left', bbox_to_anchor=(0,1))
 
     if plot_ID == 0:
+        plt.savefig(f"Plots/Titleless/Diff-Norm_{name}.png", bbox_inches='tight')
         plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Norm_{name}.png", bbox_inches='tight')
     elif plot_ID == 1:
+        plt.savefig(f"Plots/Titleless/Diff-Norm-Reduced_{name}.png", bbox_inches='tight')
         plt.title(f"Distribution of differences between {title_add}normalized schedules for n = {n}\nDisregarding home/away assignments", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Norm-Reduced_{name}.png", bbox_inches='tight')
     elif plot_ID == 2:
-        plt.title(f"Distribution of differences between rounds in {title_add}normalized schedules for n = {n}\nOnly considering home/away assignments", fontsize=fontsize)
         plt.legend(loc='upper left', bbox_to_anchor=(0.75,1))
+        plt.savefig(f"Plots/Titleless/Diff-Norm-Teamlesss_{name}.png", bbox_inches='tight')
+        plt.title(f"Distribution of differences between rounds in {title_add}normalized schedules for n = {n}\nOnly considering home/away assignments", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Norm-Teamlesss_{name}.png", bbox_inches='tight')
     # Special cases
     elif plot_ID == 3:
+        plt.savefig(f"Plots/Titleless/Diff-Top8_{name}.png", bbox_inches='tight')
         plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Top8_{name}.png", bbox_inches='tight')
     elif plot_ID == 4:
+        plt.savefig(f"Plots/Titleless/Diff-Reduced-Top8_{name}.png", bbox_inches='tight')
         plt.title(f"Distribution of differences between \"top 8\" normalized schedules for n = {n}\nDisregarding home/away assignments", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Reduced-Top8_{name}.png", bbox_inches='tight')
 
