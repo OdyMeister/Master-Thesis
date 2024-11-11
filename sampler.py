@@ -156,6 +156,6 @@ if __name__ == '__main__':
     # with open(f"Schedules/Sampler/{n}.csv", "w") as file:
     #     file.write("")
 
-    for _ in range(10000000):
+    for _ in range(152855):
         FOUND = False
         gen_rand_init(n)

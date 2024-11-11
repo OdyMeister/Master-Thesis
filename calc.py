@@ -144,10 +144,11 @@ def calc_uniformity(filepath, limit=0):
             else:
                 matchup_freq[line] += 1
 
-        for key in matchup_freq.keys():
-            if matchup_freq[key] > limit and limit != 0:
-                with open("Distances/Top-8_n=4.csv", "a") as dest:
-                    dest.write(key)
+        if limit != 0:
+            for key in matchup_freq.keys():
+                if matchup_freq[key] > limit:
+                    with open("Distances/Top-8_n=4.csv", "a") as dest:
+                        dest.write(key)
         
         return matchup_freq
 
@@ -155,5 +156,5 @@ def calc_uniformity(filepath, limit=0):
 if __name__ == "__main__":
     filepath = sys.argv[1]
     n = int(sys.argv[2])
-    calc_diff(filepath, n)
-    # calc_uniformity(filepath)
+    # calc_diff(filepath, n)
+    calc_uniformity(filepath)
