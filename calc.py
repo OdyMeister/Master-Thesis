@@ -72,6 +72,30 @@ def verify_schedules(n, path):
             count += 1
 
 
+# Samples from all solutions to get a uniform distribution
+def sample_schedules(n, path, sample_size):
+    with open(path, "r") as file:
+        count = 0
+        schedules = []
+
+        for line in file:
+            if line == "\n":
+                continue
+            count += 1
+
+        # Generate uniform unique indexes to sample from
+        indexes = np.random.choice(count, sample_size, replace=False)
+        count = 0
+
+    with open(path, "r") as file:
+        with open(f'Schedules/Uniform/Uniform-{n}.csv', 'w') as dest:
+            for line in file:
+                if count in indexes:
+                    dest.write(line)
+                    indexes = np.delete(indexes, np.where(indexes == count))
+                count += 1
+
+
 # Calculate the distance between all schedules in a file
 def calc_diff(filepath, n):
     with open(filepath, "r") as file:
@@ -96,33 +120,36 @@ def calc_diff(filepath, n):
         # Both for the 'normal' schedules and the reduced schedules
         for s in range(len(schedules)):
             for c in range(s+1, len(schedules)):
-                distance = 0
-                reduced_distance = 0
-                teamless_distance = 0
+                diff = 0            # Difference in matchups
+                reduced_diff = 0    # Difference in matchups, disregarding home/away
+                HA_diff = 0         # Difference in home/away assignments, i.e. disregarding the teams themselves
 
                 for r in range(len(schedules[s])):
                     for m in schedules[s][r]:
                         if m not in schedules[c][r]:
-                            distance += 1
+                            diff += 1
                         if not (m in schedules[c][r] or (m[1], m[0]) in schedules[c][r]):
-                            reduced_distance += 1
+                            reduced_diff += 1
 
                         # Comparing each round to see if each team has the same home/away assignment
                         # The difference is thus round based, not matchup based
-                        teamless = True
+                        team1 = False
+                        team2 = False
                         for m2 in schedules[c][r]:
                             if m[0] == m2[0]:
-                                teamless = False
+                                team1 = True
                                 break
                             if m[1] == m2[1]:
-                                teamless = False
+                                team2 = True
                                 break
-                    if teamless:
-                        teamless_distance += 1
+                        if not team1:
+                            HA_diff += 1
+                        if not team2:
+                            HA_diff += 1
 
-                dest.write(f"{distance},")
-                dest_reduced.write(f"{reduced_distance},")
-                dest_teamless.write(f"{teamless_distance},")
+                dest.write(f"{diff},")
+                dest_reduced.write(f"{reduced_diff},")
+                dest_teamless.write(f"{HA_diff},")
 
         #return distances, reduced
         print("Distances calculated")
@@ -156,5 +183,6 @@ def calc_uniformity(filepath, limit=0):
 if __name__ == "__main__":
     filepath = sys.argv[1]
     n = int(sys.argv[2])
-    # calc_diff(filepath, n)
-    calc_uniformity(filepath)
+    calc_diff(filepath, n)
+    # calc_uniformity(filepath)
+    # sample_schedules(n, filepath, 10000)
