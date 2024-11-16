@@ -19,6 +19,31 @@ def calc_matchups(n):
 def calc_drr_schedules(n):
     return math.factorial(calc_rounds(n)) // math.factorial(calc_rounds(n) - (n-1)*2)
 
+# Adjusted from: https://www.statology.org/curve-fitting-python/
+def adjusted_R2(x, y, degree):
+    curve = np.polyfit(x, y, degree)
+    p = np.poly1d(curve)
+    yhat = p(x)
+    ybar = np.sum(y)/len(y)
+    ssreg = np.sum((yhat-ybar)**2)
+    sstot = np.sum((y - ybar)**2)
+    result = 1- (((1-(ssreg/sstot))*(len(y)-1))/(len(y)-degree-1))
+    return result, curve
+
+
+def fit_curve(x, y):
+    x = list(x)[:-1]
+    best_fit = 0
+    best_curve = None
+
+    for degree in range(3, 8):
+        result = adjusted_R2(x, y, degree)
+        if result[0] > best_fit:
+            best_fit = result[0]
+            best_curve = result[1]
+
+    return np.poly1d(best_curve)
+
 
 # Verifies one given schedule
 def verify(schedule, matchups, n, count):

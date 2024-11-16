@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+from scipy.stats import linregress, norm
 from calc import *
 
 
@@ -16,7 +17,6 @@ def plot_matchups(max):
     plt.savefig("Plots/matchups.png")
     plt.show()
 
-
 def plot_rounds(max):
     x = range(0, max + 1, 2)
     y = [calc_rounds(n) for n in x]
@@ -29,7 +29,6 @@ def plot_rounds(max):
     plt.title("Number of possible rounds given n teams")
     plt.savefig("Plots/rounds.png")
     plt.show()
-
 
 def plot_upper_bound(max):
     x = range(0, max + 1, 2)
@@ -44,32 +43,41 @@ def plot_upper_bound(max):
     plt.savefig("Plots/upper_bound.png")
     plt.show()
 
-
 def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
     differences = [int(diff) for diff in open(file_path, "r").read()[:-1].split(",")]
     name = file_path.split("\\")[-1].split(".")[0].split(" ")[-1]
+    fontsize = 18
     
     if name == "":
         name = title_add + " " + str(n)
 
-    fontsize = 18
-
-    max_diff = calc_matchups(n) - (n//2)
-    min_diff = min(differences)
-    mean_diff = np.mean(differences)
-
-    # Plot type 2 is round based, so the max difference is rounds * teams - teams (since the first round is the same for all schedules)
+    # Plot type 2 is based on home/away assignments
+    # The max difference is 2 * (n-1) * n - n
+    # since the maximum difference is 2 * (n-1) * n and the first round is fixed
     if plot_ID == 2:
         max_diff = 2 * (n-1) * n - n
+    # The max difference is the number of matchups - n//2
+    # since the first round is fixed and there are n//2 matchups in each round
+    else:
+        max_diff = calc_matchups(n) - (n//2)
+    min_diff = min(differences)
+    mean_diff = np.mean(differences)
+    std_diff = np.std(differences)
 
     x_axis = range(min_diff, max_diff + 2)
 
     plt.figure(figsize=(12, 6))
-    plt.hist(differences, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
-    plt.axvline(x=max_diff, color='red', linestyle='--', linewidth=2, label="Max possible difference")
+    freqs, _, _ = plt.hist(differences, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
+
+    plt.axvline(x=max_diff, color='red', linestyle='--', linewidth=2, label="Max. possible difference")
 
     if plot_ID < 3:
-        plt.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label="Mean difference")
+        curve = fit_curve(x_axis, freqs)
+        x_axis_curve = np.linspace(min_diff, max_diff, 1000)
+        plt.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
+        plt.axvline(x=(mean_diff - std_diff), color='green', linestyle='--', linewidth=2, label=f"Std of difference: {std_diff:.2f}")
+        plt.axvline(x=(mean_diff + std_diff), color='green', linestyle='--', linewidth=2)
+        plt.plot(x_axis_curve, curve(x_axis_curve), color='black', linestyle='-', linewidth=2, label="Fitted curve")
     
     plt.xticks(x_axis[::2])
     plt.xlabel("Differences between normalized schedules", fontsize=fontsize)
@@ -196,7 +204,7 @@ if __name__ == "__main__":
 
     for plot in plots:
         file_path, n, plot_ID, title_add = plot
-        plot_diff_norm(file_path, n, plot_ID, title_add, False)
+        plot_diff_norm(file_path, n, plot_ID, title_add, True)
 
     # plot_uniformity_4()
     # plot_uniformity_sorted_4()
