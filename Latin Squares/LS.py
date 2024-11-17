@@ -1,10 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
+from plot import plot_violations
 
-# Generate a random Latin Square of size n
-# Since each row is random, the LS is not guaranteed to be valid
-def random_LS(n):
+# Generate a random Latin Square of size n row-wise
+# I.e. each row is valid, but the columns are most likely not
+def random_rowwise_LS(n):
     LS = np.array([])
 
     for _ in range(n):
@@ -14,19 +13,25 @@ def random_LS(n):
     
     return LS.reshape(n, n)
 
+# Generate a random Latin Square of size n
+# Both rows and columns are most likely invalid
+def random_LS(n):
+    LS = np.array([[i for i in range(n)] for _ in range(n)])
+    np.random.shuffle(LS)
+    return LS.reshape(n, n)
 
-
-def check_column(n, column):
+# Check the number of violations in a Latin Square
+def check_LS(n, LS):
     violations = 0
 
     for i in range(n):
-        if i not in column:
-            violations += 1
-    
+        violations += n - len(set(LS[i]))
+        violations += n - len(set(LS[:, i]))
+
     return violations
 
-
-def check_LS(n, LS):
+# Check the number of violations in the columns of a Latin Square
+def check_columns_LS(n, LS):
     violations = 0
 
     for i in range(n):
@@ -34,7 +39,7 @@ def check_LS(n, LS):
     
     return violations
 
-
+# Main funcion to generate and check Latin Squares for violations
 def calc_violations(n_lower, n_upper, power):
     results = {}
 
@@ -42,43 +47,14 @@ def calc_violations(n_lower, n_upper, power):
         results[n] = []
 
         for _ in range(10**power):
-            ls = random_LS(n)
-            violations = check_LS(n, ls)
+            ls = random_rowwise_LS(n)
+            violations = check_columns_LS(n, ls)
             results[n].append(violations)
     
     return results
-
-
-def plot_violations(results, power, show=False):
-    for n, violations in results.items():
-        x = range(min(violations), max(violations) + 1)
-        x_axis_curve = np.linspace(min(violations), max(violations), 1000)
-        amount = "10^" + str(power)
-
-        mean_diff = np.mean(violations)
-        std_diff = np.std(violations)
-
-        freqs, _, _ = plt.hist(violations, bins=x, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
         
-        plt.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
-        plt.axvline(x=(mean_diff - std_diff), color='green', linestyle='--', linewidth=2, label=f"Std of difference: {std_diff:.2f}")
-        plt.axvline(x=(mean_diff + std_diff), color='green', linestyle='--', linewidth=2)
-
-        # pdf_fitted = norm.pdf(x_axis_curve, mean_diff, std_diff)
-        # plt.plot(x_axis_curve, pdf_fitted * max(freqs) * (1 / max(pdf_fitted)), color='black', linestyle='-', linewidth=1, label="Normal dist. curve")
-        
-        plt.grid(alpha=0.5)
-        plt.xlabel("Violations")
-        plt.ylabel("Frequency")
-        plt.legend()
-        plt.savefig(f"Plots/no_title/Violations_LS_{n}.png")
-        plt.title(f"Violations for row-generated Latin Squares of size {n}, for {amount} latin squares")
-        plt.savefig(f"Plots/Violations_LS_{n}.png")
-        if show:
-            plt.show()
-
 
 if __name__ == "__main__":
     sample_size_power = 3
-    result = calc_violations(50, 50, sample_size_power)
-    plot_violations(result, sample_size_power, False)
+    result = calc_violations(4, 50, sample_size_power)
+    plot_violations(result, sample_size_power, line=True, show=True)
