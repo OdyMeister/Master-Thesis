@@ -36,7 +36,7 @@ def fit_curve(x, y):
     best_fit = 0
     best_curve = None
 
-    for degree in range(3, 8):
+    for degree in range(1, 8):
         result = adjusted_R2(x, y, degree)
         if result[0] > best_fit:
             best_fit = result[0]

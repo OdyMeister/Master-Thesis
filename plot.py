@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import sys
-from scipy.stats import linregress, norm
+from scipy.stats import norm, lognorm
 from calc import *
 
 
@@ -47,7 +46,7 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
     differences = [int(diff) for diff in open(file_path, "r").read()[:-1].split(",")]
     name = file_path.split("\\")[-1].split(".")[0].split(" ")[-1]
     fontsize = 18
-    
+
     if name == "":
         name = title_add + " " + str(n)
 
@@ -66,25 +65,51 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
 
     x_axis = range(min_diff, max_diff + 2)
 
-    plt.figure(figsize=(12, 6))
+    # Create the plot and histogram
+    fig, ax = plt.figure(figsize=(12, 6))
     freqs, _, _ = plt.hist(differences, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
 
+    # Add vertical lines for the max difference
     plt.axvline(x=max_diff, color='red', linestyle='--', linewidth=2, label="Max. possible difference")
 
-    if plot_ID < 3:
-        curve = fit_curve(x_axis, freqs)
+    # Plot a curve to match the distribution of the differences
+    if plot_ID < 3 and (plot_ID != 1 or n > 4):
         x_axis_curve = np.linspace(min_diff, max_diff, 1000)
+
+        # curve = fit_curve(x_axis, freqs)
+        # plt.plot(x_axis_curve, curve(x_axis_curve), color='black', linestyle='-', linewidth=2, label="Fitted curve")
+
+        pdf_fitted = norm.pdf(x_axis_curve, mean_diff, std_diff)
+        plt.plot(x_axis_curve, pdf_fitted * max(freqs) * (1 / max(pdf_fitted)), color='black', linestyle='-', linewidth=2, label="Normal dist. curve")
+
+        # shape, loc, scale = lognorm.fit(differences)
+        # pdf_fitted = lognorm.pdf(x_axis_curve, shape, loc, scale)
+        # plt.plot(x_axis_curve, pdf_fitted * max(freqs) * (1 / max(pdf_fitted)), color='black', linestyle='-', linewidth=2, label="Lognormal dist.  curve")
+
         plt.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
         plt.axvline(x=(mean_diff - std_diff), color='green', linestyle='--', linewidth=2, label=f"Std of difference: {std_diff:.2f}")
         plt.axvline(x=(mean_diff + std_diff), color='green', linestyle='--', linewidth=2)
-        plt.plot(x_axis_curve, curve(x_axis_curve), color='black', linestyle='-', linewidth=2, label="Fitted curve")
-    
-    plt.xticks(x_axis[::2])
+
+    # Code to only show every other x value
+    # Checks to make sure the last value is the max difference
+    x_values = x_axis[::2]
+    if x_values[-1] != max_diff:
+        x_values[-1] = max_diff
+
+    # Set the labels and title
+    plt.xticks(x_values)
     plt.xlabel("Differences between normalized schedules", fontsize=fontsize)
     plt.ylabel("Frequency", fontsize=fontsize)
     plt.grid(alpha=0.5)
     plt.legend(loc='upper left', bbox_to_anchor=(0,1))
 
+    # Depending on the plot type, save the plot with a different name
+    # Type 0 is jsut for the differences
+    # Type 1 is for the differences disregarding home/away assignments
+    # Type 2 is for the differences only considering home/away assignments
+    # Type 3 is for the differences of the top 8 teams
+    # Type 4 is for the differences of the top 8 teams disregarding home/away assignments
+    # Type 5 is for the differences of the top 8 teams only considering home/away assignments
     if plot_ID == 0:
         plt.savefig(f"Plots/no_title/Diff-Norm_{name}.png", bbox_inches='tight')
         plt.title(f"Distribution of differences for {title_add}normalized schedules for n = {n}", fontsize=fontsize)
@@ -107,6 +132,10 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
         plt.savefig(f"Plots/no_title/Diff-Reduced-Top8_{name}.png", bbox_inches='tight')
         plt.title(f"Distribution of differences for \"top 8\" normalized schedules for n = {n}\nDisregarding home/away assignments", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Reduced-Top8_{name}.png", bbox_inches='tight')
+    elif plot_ID == 5:
+        plt.savefig(f"Plots/no_title/Diff-Teamless-Top8_{name}.png", bbox_inches='tight')
+        plt.title(f"Distribution of differences for \"top 8\" normalized schedules for n = {n}\nOnly considering home/away assignments", fontsize=fontsize)
+        plt.savefig(f"Plots/Diff-Teamless-Top8_{name}.png", bbox_inches='tight')
     if show:
         plt.show()
 
@@ -202,7 +231,7 @@ if __name__ == "__main__":
         # ("./Distances/Distances Teamless Random-10k-10.csv", 10, 2, "10k random ")
     ]
 
-    for plot in plots:
+    for plot in plots[0:1]:
         file_path, n, plot_ID, title_add = plot
         plot_diff_norm(file_path, n, plot_ID, title_add, True)
 
