@@ -2,7 +2,7 @@ import numpy as np
 from plot import plot_violations
 
 # Generate a random Latin Square of size n
-# Ccolumns are most likely invalid
+# Row-wise generation, thus columns are most likely invalid
 def random_LS(n):
     LS = np.array([])
 
@@ -17,6 +17,8 @@ def random_LS(n):
 def check_LS(n, LS):
     violations = 0
 
+    # Turning each column into a set and subtracting the length
+    # from n tells us how many numbers are missing
     for i in range(n):
         violations += n - len(set(LS[:, i]))
     
@@ -26,9 +28,11 @@ def check_LS(n, LS):
 def calc_violations(n_lower, n_upper, power):
     results = {}
 
+    # Outer loop for the size of the Latin Square
     for n in range(n_lower, n_upper + 1, 2):
         results[n] = []
 
+        # Inner loop saving the number of violations for each Latin Square
         for _ in range(10**power):
             ls = random_LS(n)
             violations = check_LS(n, ls)
@@ -36,7 +40,6 @@ def calc_violations(n_lower, n_upper, power):
     
     return results
         
-
 if __name__ == "__main__":
     sample_size_power = 5
     result = calc_violations(4, 50, sample_size_power)

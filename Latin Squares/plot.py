@@ -34,7 +34,6 @@ def plot_histogram(n, violations, power, mean_diff, std_diff, show=False):
     # Makes sure both y-axes starts at 0
     ax1.set_ylim(bottom=0)
     ax2.set_ylim(bottom=0)
-    ax1.legend()
 
     # Combine legends from both axes
     lines1, labels1 = ax1.get_legend_handles_labels()

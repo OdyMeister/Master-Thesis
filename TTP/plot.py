@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import norm, lognorm
+from scipy.stats import norm, lognorm, beta, betabinom
 from calc import *
 
 
@@ -43,7 +43,7 @@ def plot_upper_bound(max):
     plt.show()
 
 def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
-    differences = [int(diff) for diff in open(file_path, "r").read()[:-1].split(",")]
+    differences = np.array([int(diff) for diff in open(file_path, "r").read()[:-1].split(",")])
     name = file_path.split("\\")[-1].split(".")[0].split(" ")[-1]
     fontsize = 18
 
@@ -59,49 +59,62 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
     # since the first round is fixed and there are n//2 matchups in each round
     else:
         max_diff = calc_matchups(n) - (n//2)
-    min_diff = min(differences)
+
+    min_diff = np.min(differences)
     mean_diff = np.mean(differences)
     std_diff = np.std(differences)
 
     x_axis = range(min_diff, max_diff + 2)
 
     # Create the plot and histogram
-    fig, ax = plt.figure(figsize=(12, 6))
-    freqs, _, _ = plt.hist(differences, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
+    _, ax1 = plt.subplots(figsize=(12, 6))
+    ax2 = ax1.twinx()
+    freqs, _, _ = ax1.hist(differences, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
 
     # Add vertical lines for the max difference
     plt.axvline(x=max_diff, color='red', linestyle='--', linewidth=2, label="Max. possible difference")
 
     # Plot a curve to match the distribution of the differences
     if plot_ID < 3 and (plot_ID != 1 or n > 4):
-        x_axis_curve = np.linspace(min_diff, max_diff, 1000)
+        x_axis_fit = np.linspace(min_diff, max_diff + 1, 1000)
 
-        # curve = fit_curve(x_axis, freqs)
-        # plt.plot(x_axis_curve, curve(x_axis_curve), color='black', linestyle='-', linewidth=2, label="Fitted curve")
+        # pdf_fitted = lognorm.fit(differences)
+        # ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label="Lognormal distribution")
 
-        pdf_fitted = norm.pdf(x_axis_curve, mean_diff, std_diff)
-        plt.plot(x_axis_curve, pdf_fitted * max(freqs) * (1 / max(pdf_fitted)), color='black', linestyle='-', linewidth=2, label="Normal dist. curve")
+        # pdf_fitted = norm.fit(x_axis_fit, mean_diff, std_diff)
+        # ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label="Normal distribution")
 
-        # shape, loc, scale = lognorm.fit(differences)
-        # pdf_fitted = lognorm.pdf(x_axis_curve, shape, loc, scale)
-        # plt.plot(x_axis_curve, pdf_fitted * max(freqs) * (1 / max(pdf_fitted)), color='black', linestyle='-', linewidth=2, label="Lognormal dist.  curve")
+        # a, b = fit_beta(x_fit, np.append(freqs, [0]), max_diff)
+        # pdf_fitted = beta.pdf(x_axis_fit, a, b, loc=0, scale=max_diff)
+        # ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label=f"Beta distribution: a={a:.2f}, b={b:.2f}")
 
-        plt.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
-        plt.axvline(x=(mean_diff - std_diff), color='green', linestyle='--', linewidth=2, label=f"Std of difference: {std_diff:.2f}")
-        plt.axvline(x=(mean_diff + std_diff), color='green', linestyle='--', linewidth=2)
+        a, b = fit_beta_binom(x_axis, np.append(freqs, [0]), max_diff)
+        pmf_fitted = betabinom.pmf(x_axis, max_diff, a, b, loc=0)
+        ax2.plot(x_axis, pmf_fitted, color='black', linestyle='-', linewidth=2, label=f"Beta binom distribution: a={a:.2f}, b={b:.2f}")
+
+        ax1.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
+        ax1.axvline(x=(mean_diff - std_diff), color='green', linestyle='--', linewidth=2, label=f"Std of difference: {std_diff:.2f}")
+        ax1.axvline(x=(mean_diff + std_diff), color='green', linestyle='--', linewidth=2)
 
     # Code to only show every other x value
     # Checks to make sure the last value is the max difference
     x_values = x_axis[::2]
-    if x_values[-1] != max_diff:
-        x_values[-1] = max_diff
+    # if x_values[-1] != max_diff:
+    #     x_values[-1] = max_diff
 
     # Set the labels and title
-    plt.xticks(x_values)
-    plt.xlabel("Differences between normalized schedules", fontsize=fontsize)
-    plt.ylabel("Frequency", fontsize=fontsize)
+    ax1.set_xticks(x_values)
+    ax1.set_xlabel("Differences between normalized schedules", fontsize=fontsize)
+    ax1.set_ylabel("Frequency", fontsize=fontsize)
     plt.grid(alpha=0.5)
-    plt.legend(loc='upper left', bbox_to_anchor=(0,1))
+
+    # Makes sure both y-axes starts at 0
+    ax1.set_ylim(bottom=0)
+    ax2.set_ylim(bottom=0)
+
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', bbox_to_anchor=(0,1))
 
     # Depending on the plot type, save the plot with a different name
     # Type 0 is jsut for the differences
@@ -231,7 +244,7 @@ if __name__ == "__main__":
         # ("./Distances/Distances Teamless Random-10k-10.csv", 10, 2, "10k random ")
     ]
 
-    for plot in plots[0:1]:
+    for plot in plots[6:7]:
         file_path, n, plot_ID, title_add = plot
         plot_diff_norm(file_path, n, plot_ID, title_add, True)
 

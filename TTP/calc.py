@@ -1,8 +1,11 @@
 import math
 import ast
 import sys
+import numpy as np
 from TTP import *
 from plot import *
+from scipy.stats import beta, betabinom
+from sklearn.metrics import r2_score
 
 
 # Calculate the number of possible rounds for a given number of teams
@@ -19,30 +22,31 @@ def calc_matchups(n):
 def calc_drr_schedules(n):
     return math.factorial(calc_rounds(n)) // math.factorial(calc_rounds(n) - (n-1)*2)
 
-# Adjusted from: https://www.statology.org/curve-fitting-python/
-def adjusted_R2(x, y, degree):
-    curve = np.polyfit(x, y, degree)
-    p = np.poly1d(curve)
-    yhat = p(x)
-    ybar = np.sum(y)/len(y)
-    ssreg = np.sum((yhat-ybar)**2)
-    sstot = np.sum((y - ybar)**2)
-    result = 1- (((1-(ssreg/sstot))*(len(y)-1))/(len(y)-degree-1))
-    return result, curve
+def adjusted_R2(x, expected, max_diff, a, b):
+    pdf = beta.pdf(x, a, b, loc=0, scale=max_diff)
+    r2 = r2_score(expected, pdf)
+    return r2
 
+def diff_beta_binom_fit(x, expected, max_diff, a, b):
+    pdf = betabinom.pmf(x, max_diff, a, b, loc=0)
+    score = np.sum((expected - pdf)**2)
+    return score
 
-def fit_curve(x, y):
-    x = list(x)[:-1]
-    best_fit = 0
-    best_curve = None
+def fit_beta_binom(x, data, max_diff):
+    x = list(x)
+    best_fit = np.inf
+    best_pmf = None
+    expected = data / np.sum(data)
 
-    for degree in range(1, 8):
-        result = adjusted_R2(x, y, degree)
-        if result[0] > best_fit:
-            best_fit = result[0]
-            best_curve = result[1]
+    for a in np.arange(1, 1000, 1):
+        for b in np.arange(0.1, 30, 0.1):
+            result = diff_beta_binom_fit(x, expected, max_diff, a, b)
+            if result < best_fit:
+                best_fit = result
+                best_pmf = (a, b)
 
-    return np.poly1d(best_curve)
+    print(f"Score: {best_fit}, a: {best_pmf[0]}, b: {best_pmf[1]}")
+    return best_pmf
 
 
 # Verifies one given schedule
