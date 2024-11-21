@@ -76,21 +76,14 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
 
     # Plot a curve to match the distribution of the differences
     if plot_ID < 3 and (plot_ID != 1 or n > 4):
-        x_axis_fit = np.linspace(min_diff, max_diff + 1, 1000)
-
-        # pdf_fitted = lognorm.fit(differences)
-        # ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label="Lognormal distribution")
-
-        # pdf_fitted = norm.fit(x_axis_fit, mean_diff, std_diff)
-        # ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label="Normal distribution")
-
-        # a, b = fit_beta(x_fit, np.append(freqs, [0]), max_diff)
-        # pdf_fitted = beta.pdf(x_axis_fit, a, b, loc=0, scale=max_diff)
-        # ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label=f"Beta distribution: a={a:.2f}, b={b:.2f}")
-
-        a, b = fit_beta_binom(x_axis, np.append(freqs, [0]), max_diff)
-        pmf_fitted = betabinom.pmf(x_axis, max_diff, a, b, loc=0)
-        ax2.plot(x_axis, pmf_fitted, color='black', linestyle='-', linewidth=2, label=f"Beta binom distribution: a={a:.2f}, b={b:.2f}")
+        if plot_ID == 2 and n > 4:
+            x_axis_fit = np.linspace(min_diff, max_diff + 1, 1000)
+            pdf_fitted = norm.pdf(x_axis_fit, mean_diff, std_diff)
+            ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label="Normal distribution")
+        elif n > 4:
+            a, b = fit_beta_binom(x_axis, np.append(freqs, [0]), max_diff)
+            pmf_fitted = betabinom.pmf(x_axis, max_diff, a, b, loc=0)
+            ax2.plot(x_axis, pmf_fitted, color='black', linestyle='-', linewidth=2, label=f"Beta binom distribution: a={a:.2f}, b={b:.2f}")
 
         ax1.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
         ax1.axvline(x=(mean_diff - std_diff), color='green', linestyle='--', linewidth=2, label=f"Std of difference: {std_diff:.2f}")
@@ -244,9 +237,9 @@ if __name__ == "__main__":
         # ("./Distances/Distances Teamless Random-10k-10.csv", 10, 2, "10k random ")
     ]
 
-    for plot in plots[6:7]:
+    for plot in plots:
         file_path, n, plot_ID, title_add = plot
-        plot_diff_norm(file_path, n, plot_ID, title_add, True)
+        plot_diff_norm(file_path, n, plot_ID, title_add, False)
 
     # plot_uniformity_4()
     # plot_uniformity_sorted_4()

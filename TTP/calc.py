@@ -38,14 +38,25 @@ def fit_beta_binom(x, data, max_diff):
     best_pmf = None
     expected = data / np.sum(data)
 
-    for a in np.arange(1, 1000, 1):
-        for b in np.arange(0.1, 30, 0.1):
+    # For loop to rougly find the best fit
+    for a in np.arange(0, 10**3, 10):
+        for b in np.arange(0, 10**3, 10):
             result = diff_beta_binom_fit(x, expected, max_diff, a, b)
             if result < best_fit:
                 best_fit = result
                 best_pmf = (a, b)
+    
+    # Refine the best fit with smaller step sizes
+    for step in [10**s for s in range(-2, 2)]:
+        currentA, currentB = best_pmf
+        adj = step * 10
+        for a in np.arange(currentA - adj, currentA + adj, step):
+            for b in np.arange(currentB - adj, currentB + adj, step):
+                result = diff_beta_binom_fit(x, expected, max_diff, a, b)
+                if result < best_fit:
+                    best_fit = result
+                    best_pmf = (a, b)
 
-    print(f"Score: {best_fit}, a: {best_pmf[0]}, b: {best_pmf[1]}")
     return best_pmf
 
 
