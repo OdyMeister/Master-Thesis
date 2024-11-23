@@ -116,6 +116,7 @@ def ls_drb(n, indexes, LS, LSs, save=False):
         ls_drb(n, new_indexes, new_LS, LSs)
 
 
+# Runs and times a given generator function for generating all Latin Squares of order n
 def timer(n, generator):
     # Running and timing the generation of all Latin Squares of order n
     start_time = timeit.default_timer()

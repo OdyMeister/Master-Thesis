@@ -74,7 +74,7 @@ def plot_line(violations, power, show=False):
         plt.show()
 
 # Main plotting function
-def plot_violations(results, power, hist=False, line=False, show=False):
+def plot_violations(results, power, hist=False, line=True, show=False):
     all_violations = np.array([])
     
     for n, violations in results.items():

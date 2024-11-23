@@ -43,4 +43,4 @@ def calc_violations(n_lower, n_upper, power):
 if __name__ == "__main__":
     sample_size_power = 5
     result = calc_violations(4, 50, sample_size_power)
-    plot_violations(result, sample_size_power, hist=True, line=False, show=False)
+    plot_violations(result, sample_size_power, hist=False, line=True, show=False)
