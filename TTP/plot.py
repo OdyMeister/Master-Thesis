@@ -82,6 +82,10 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
             ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label="Normal distribution")
         elif n > 4:
             a, b = fit_beta_binom(x_axis, np.append(freqs, [0]), max_diff)
+
+            mean_diff = betabinom.mean(max_diff, a, b, loc=0)
+            std_diff = betabinom.std(max_diff, a, b, loc=0)
+
             pmf_fitted = betabinom.pmf(x_axis, max_diff, a, b, loc=0)
             ax2.plot(x_axis, pmf_fitted, color='black', linestyle='-', linewidth=2, label=f"Beta binom distribution: a={a:.2f}, b={b:.2f}")
 
