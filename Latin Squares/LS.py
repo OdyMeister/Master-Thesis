@@ -138,11 +138,12 @@ def timer(n, generator):
 
     return time
 
+
 # Main function which calls the timers and collects the resulst
 def main(n_min, n_max):
     global COUNT
-    file_rb = open("Count/LS_rb_count.txt", "w")
-    file_drb = open("Count/LS_drb_count.txt", "w")
+    file_rb = open("Count/LS_rb_count.txt", "a")
+    file_drb = open("Count/LS_drb_count.txt", "a")
 
     # Calculate number of Latin Squares of order up to n_max
     for n in range(n_min, n_max + 1, 2):
@@ -155,8 +156,6 @@ def main(n_min, n_max):
         file_drb.write(f"n={n}: {COUNT}, {time}\n")
         print(f"drb n={n}:", COUNT, time)
         COUNT = 0
-
-        print()
 
 
 # Get arguments and run main function

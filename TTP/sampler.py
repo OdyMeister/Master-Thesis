@@ -61,40 +61,40 @@ def back_to_back(schedule, matchup, index):
     return False
 
 # Checks if a team is playing at home or away three times in a row
-def home_away_streak(schedule, matchup, index):
-    # Get the indexes of at most 3 rounds before and after the current round
-    lower = max(0, index[1]-3)
-    upper = min(len(schedule)-1, index[1]+3)
-    # Get the rounds in the range of the indexes
-    rounds = schedule[lower:upper+1]
-    # Initialize the streaks for each team at 0
-    streaks = {"home1": 0, "home2": 0, "away1": 0, "away2": 0}
+# def home_away_streak(schedule, matchup, index):
+#     # Get the indexes of at most 3 rounds before and after the current round
+#     lower = max(0, index[1]-3)
+#     upper = min(len(schedule)-1, index[1]+3)
+#     # Get the rounds in the range of the indexes
+#     rounds = schedule[lower:upper+1]
+#     # Initialize the streaks for each team at 0
+#     streaks = {"home1": 0, "home2": 0, "away1": 0, "away2": 0}
 
-    for round in rounds:
-        for i in range(len(round)):
-            m = round[i]
+#     for round in rounds:
+#         for i in range(len(round)):
+#             m = round[i]
 
-            if i == index[0]:
-                continue #TODO
+#             if i == index[0]:
+#                 continue #TODO
 
-            if m[0] == matchup[0]:
-                streaks["home1"] += 1
-                streaks["away1"] = 0
-            if m[0] == matchup[1]:
-                streaks["away1"] += 1
-                streaks["home1"] = 0
-            if m[1] == matchup[0]:
-                streaks["home2"] += 1
-                streaks["away2"] = 0
-            if m[1] == matchup[1]:
-                streaks["away2"] += 1
-                streaks["home2"] = 0
+#             if m[0] == matchup[0]:
+#                 streaks["home1"] += 1
+#                 streaks["away1"] = 0
+#             if m[0] == matchup[1]:
+#                 streaks["away1"] += 1
+#                 streaks["home1"] = 0
+#             if m[1] == matchup[0]:
+#                 streaks["home2"] += 1
+#                 streaks["away2"] = 0
+#             if m[1] == matchup[1]:
+#                 streaks["away2"] += 1
+#                 streaks["home2"] = 0
         
-            for key in streaks:
-                if streaks[key] > 3:
-                    return True
+#             for key in streaks:
+#                 if streaks[key] > 3:
+#                     return True
 
-    return False
+#     return False
 
 
 def check_constraints(schedule, matchup, index):
@@ -102,8 +102,8 @@ def check_constraints(schedule, matchup, index):
         return True
     if back_to_back(schedule, matchup, index):
         return True
-    if home_away_streak(schedule, matchup, index):
-        return True
+    # if home_away_streak(schedule, matchup, index):
+    #     return True
     return False
 
 

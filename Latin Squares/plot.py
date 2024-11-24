@@ -6,7 +6,7 @@ from scipy.stats import norm
 def plot_histogram(n, violations, power, mean_diff, std_diff, show=False):
     # Initialize x axis and amount string for the title
     x = range(min(violations), max(violations) + 1)
-    amount = "10^" + str(power)
+    amount = f"$10^{{{power}}}$"
 
     # Fit a normal distribution curve with more points for a smoother curve
     x_norm = np.linspace(min(violations), max(violations), 1000)
@@ -54,27 +54,39 @@ def plot_line(violations, power, show=False):
     n = violations[:, 0]
     means = violations[:, 1]
     stds = violations[:, 2]
-    amount = "10^" + str(power)
+    amount = f"$10^{{{power}}}$"
 
-    lower = int(n[0])
-    upper = int(n[-1])
+    lower_n = int(n[0])
+    upper_n = int(n[-1])
+
+    mean_fit = np.polyfit(n, means, 2)
+    std_fit1 = np.polyfit(n, means + stds, 2)
+    std_fit2 = np.polyfit(n, means - stds, 2)
+    
+    mean_curve = np.poly1d(mean_fit)
+    std_curve1 = np.poly1d(std_fit1)
+    std_curve2 = np.poly1d(std_fit2)
 
     plt.figure(figsize=(10, 6))
     plt.plot(n, means, color='black', linestyle='-', label="Mean difference")
+    # plt.plot(n, mean_curve, color='red', linestyle='--', label=f"Mean fit: ${mean_fit[0]:.2f}e^({mean_fit[1]:.2f}n)$")
+    plt.plot(n, mean_curve(n), color='red', linestyle='--', label=f"Mean fit: ${mean_fit[0]:.2f}n^{2} + {mean_fit[1]:.2f}n + {mean_fit[2]:.2f}$")
+    plt.plot(n, std_curve1(n), color='orange', linestyle='--', label=f"Std+ fit: ${std_fit1[0]:.2f}n^{2} + {std_fit1[1]:.2f}n + {std_fit1[2]:.2f}$")
+    plt.plot(n, std_curve2(n), color='orange', linestyle='--', label=f"Std- fit: ${std_fit2[0]:.2f}n^{2} + {std_fit2[1]:.2f}n + {std_fit2[2]:.2f}$")
     plt.fill_between(n, means - stds, means + stds, color='orange', alpha=0.5, label="Std of difference")
         
     plt.grid(alpha=0.5)
     plt.xlabel("Violations")
     plt.ylabel("Mean frequency")
     plt.legend()
-    plt.savefig(f"Plots/no_title/All_violations({lower}-{upper}).png", bbox_inches='tight')
-    plt.title(f"Violations for {amount} Latin Squares with n: [{lower}, {upper}]")
-    plt.savefig(f"Plots/All_violations({lower}-{upper}).png", bbox_inches='tight')
+    plt.savefig(f"Plots/no_title/All_violations({lower_n}-{upper_n}).png", bbox_inches='tight')
+    plt.title(f"Violations for {amount} Latin Squares with n: [{lower_n}, {upper_n}]")
+    plt.savefig(f"Plots/All_violations({lower_n}-{upper_n}).png", bbox_inches='tight')
     if show:
         plt.show()
 
 # Main plotting function
-def plot_violations(results, power, hist=False, line=True, show=False):
+def plot_violations(results, power, hist=False, line=False, show=False):
     all_violations = np.array([])
     
     for n, violations in results.items():
