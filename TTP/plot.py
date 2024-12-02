@@ -72,15 +72,15 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
     freqs, _, _ = ax1.hist(differences, bins=x_axis, align='left', color='orange', alpha=0.9, edgecolor='black', linewidth=1)
 
     # Add vertical lines for the max difference
-    plt.axvline(x=max_diff, color='red', linestyle='--', linewidth=2, label="Max. possible difference")
+    ax1.axvline(x=max_diff, color='red', linestyle='--', linewidth=2, label="Max. possible difference")
 
     # Plot a curve to match the distribution of the differences
     if plot_ID < 3 and (plot_ID != 1 or n > 4):
-        if plot_ID == 2 and n > 4:
+        if plot_ID == 2:
             x_axis_fit = np.linspace(min_diff, max_diff + 1, 1000)
             pdf_fitted = norm.pdf(x_axis_fit, mean_diff, std_diff)
             ax2.plot(x_axis_fit, pdf_fitted, color='black', linestyle='-', linewidth=2, label="Normal distribution")
-        elif n > 4:
+        else:
             a, b = fit_beta_binom(x_axis, np.append(freqs, [0]), max_diff)
 
             mean_diff = betabinom.mean(max_diff, a, b, loc=0)
@@ -89,9 +89,9 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
             pmf_fitted = betabinom.pmf(x_axis, max_diff, a, b, loc=0)
             ax2.plot(x_axis, pmf_fitted, color='black', linestyle='-', linewidth=2, label=f"Beta binom distribution: a={a:.2f}, b={b:.2f}")
 
-        ax1.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
         ax1.axvline(x=(mean_diff - std_diff), color='green', linestyle='--', linewidth=2, label=f"Std of difference: {std_diff:.2f}")
         ax1.axvline(x=(mean_diff + std_diff), color='green', linestyle='--', linewidth=2)
+    ax1.axvline(x=mean_diff, color='blue', linestyle='--', linewidth=2, label=f"Mean difference: {mean_diff:.2f}")
 
     # Code to only show every other x value
     # Checks to make sure the last value is the max difference
@@ -101,8 +101,10 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
 
     # Set the labels and title
     ax1.set_xticks(x_values)
-    ax1.set_xlabel("Differences between normalized schedules", fontsize=fontsize)
+    ax1.set_xlabel("Differences", fontsize=fontsize)
     ax1.set_ylabel("Frequency", fontsize=fontsize)
+    if plot_ID != 1 and n > 4:
+        ax2.set_ylabel("Probability density", fontsize=fontsize)
     plt.grid(alpha=0.5)
 
     # Makes sure both y-axes starts at 0
@@ -129,7 +131,6 @@ def plot_diff_norm(file_path, n, plot_ID, title_add="", show=False):
         plt.title(f"Distribution of differences for {title_add}normalized schedules for n = {n}\nDisregarding home/away assignments", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Norm-Reduced_{name}.png", bbox_inches='tight')
     elif plot_ID == 2:
-        plt.legend(loc='upper left', bbox_to_anchor=(0.75,1))
         plt.savefig(f"Plots/no_title/Diff-Norm-Teamlesss_{name}.png", bbox_inches='tight')
         plt.title(f"Distribution of differences for {title_add}normalized schedules for n = {n}\nOnly considering home/away assignments", fontsize=fontsize)
         plt.savefig(f"Plots/Diff-Norm-Teamlesss_{name}.png", bbox_inches='tight')
@@ -243,12 +244,12 @@ if __name__ == "__main__":
 
     for plot in plots:
         file_path, n, plot_ID, title_add = plot
-        plot_diff_norm(file_path, n, plot_ID, title_add, False)
+        plot_diff_norm(file_path, n, plot_ID, title_add, True)
 
-    # plot_uniformity_4()
-    # plot_uniformity_sorted_4()
-    # plot_uniformity_sampler_4()
-    # plot_uniformity_sampler_sorted_4()
+    plot_uniformity_4()
+    plot_uniformity_sorted_4()
+    plot_uniformity_sampler_4()
+    plot_uniformity_sampler_sorted_4()
 
     # plot_matchups(50)
     # plot_rounds(50)

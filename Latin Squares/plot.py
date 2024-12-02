@@ -27,9 +27,9 @@ def plot_histogram(n, violations, power, mean_diff, std_diff, show=False):
     # plt.plot(x_axis_curve, pdf_fitted * max(freqs) * (1 / max(pdf_fitted)), color='black', linestyle='-', linewidth=1, label="Normal distribution")
     
     # Add labels to all axes
-    ax1.set_xlabel("Violations")
-    ax1.set_ylabel("Frequency")
-    ax2.set_ylabel("Probability density")
+    ax1.set_xlabel("Violations", fontsize=18)
+    ax1.set_ylabel("Frequency", fontsize=18)
+    ax2.set_ylabel("Probability density", fontsize=18)
 
     # Makes sure both y-axes starts at 0
     ax1.set_ylim(bottom=0)
@@ -76,8 +76,8 @@ def plot_line(violations, power, show=False):
     plt.fill_between(n, means - stds, means + stds, color='orange', alpha=0.5, label="Std of difference")
         
     plt.grid(alpha=0.5)
-    plt.xlabel("Violations")
-    plt.ylabel("Mean frequency")
+    plt.xlabel("Violations", fontsize=18)
+    plt.ylabel("Mean frequency", fontsize=18)
     plt.legend()
     plt.savefig(f"Plots/no_title/All_violations({lower_n}-{upper_n}).png", bbox_inches='tight')
     plt.title(f"Violations for {amount} Latin Squares with n: [{lower_n}, {upper_n}]")

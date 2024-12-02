@@ -73,8 +73,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-
-# Runs and times a given generator function for generating all Latin Squares of order n
+# Times the execution of the TTP algorithm for a given n
 def timer(n, args):
     # Running and timing the generation of all Latin Squares of order n
     start_time = timeit.default_timer()
@@ -108,6 +107,8 @@ def run():
     # Run generate_TTP for each n in the range
     for n in range(args.n_start, args.n_end + 1, 2):
         print(f"Generating schedules for {n} teams")
+
+        # Measures and prints the time taken for each n, if timer is enabled
         if args.timer:
             time = timer(n, args)
             print(f"Time taken: {time}\n")
