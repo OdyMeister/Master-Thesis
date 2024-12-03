@@ -61,7 +61,7 @@ def fit_beta_binom(x, data, max_diff):
 
 
 # Verifies one given schedule
-def verify(schedule, matchups, n, count):
+def verify(n, schedule, matchups, count):
     current = []
     prev_round1 = []
     streak = {i: {"home": 0, "away": 0} for i in range(n)}
@@ -108,7 +108,7 @@ def verify_schedules(n, path):
             matchups = []
             generate_matchups(n, matchups)
             schedule = ast.literal_eval("[" + line + "]")
-            verify(schedule, matchups, n, count)
+            verify(n, schedule, matchups, count)
             count += 1
 
 

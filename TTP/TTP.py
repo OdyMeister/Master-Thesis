@@ -1,6 +1,6 @@
 from helper import *
-import random
 import numpy as np
+from calc import verify
 
 
 # Generate all possible matchups of teams
@@ -38,7 +38,6 @@ def check__future_streak_violation(m, streaks):
     s = streaks[m[0]][2][0] if (streaks[m[0]][2][1] == "home" and streaks[m[0]][0] - 1 > streaks[m[0]][1]) else 0
 
     if (x + s) / 3 > y + 1:
-        #print(f"Future home streak violation for team {m[0]}, \t {streaks[m[0]]} \t x: {x}, y: {y}, s: {s}")
         return True
 
     x = max(streaks[m[1]][0], streaks[m[1]][1] - 1)
@@ -46,7 +45,6 @@ def check__future_streak_violation(m, streaks):
     s = streaks[m[1]][2][0] if (streaks[m[1]][2][1] == "away" and streaks[m[1]][1] - 1 > streaks[m[1]][0]) else 0
 
     if (x + s) / 3 > y + 1:
-        #print(f"Future away streak violation for team {m[1]}, \t {streaks[m[1]]} \t x: {x}, y: {y}, s: {s}")
         return True
     return False
 
@@ -65,11 +63,14 @@ def prevent_four_in_a_row(m, streaks):
 
 # Updates the current home/away streaks for the two teams in the current matchup
 def update_streaks(m, streaks):
+    # Checks whether the first team in the matchup is playing at home or on the road and updates accordingly
+    # Also keeps track of the number of home/away games left for each team
     if streaks[m[0]][2][1] == "home":
         streaks[m[0]] = (streaks[m[0]][0]-1, streaks[m[0]][1], (streaks[m[0]][2][0] + 1, "home"))
     else:
         streaks[m[0]] = (streaks[m[0]][0]-1, streaks[m[0]][1], (1, "home"))
 
+    # Same here but for the second team in the matchup
     if streaks[m[1]][2][1] == "away":
         streaks[m[1]] = (streaks[m[1]][0], streaks[m[1]][1]-1, (streaks[m[1]][2][0] + 1, "away"))
     else:
@@ -80,6 +81,7 @@ def update_streaks(m, streaks):
 def generate_normalized_schedules(n, matchups, streaks, schedules, args, schedule=[]):
     first_round = []
 
+    # Order the first round in the schedule to normalize it
     for i in range(0, n, 2):
         first_round.append((i, i+1))
         matchups.remove((i, i+1))
@@ -104,8 +106,10 @@ def check_constraints(schedule, streaks, n, m):
     # Gets the index to find the matchups in the current round
     index = len(schedule) % (n//2)
     current = schedule[-index:] if index > 0 else []
-    prev_round = schedule[-index-(n//2):-index] if len(schedule) >= (n-1) else []
-    prev_rounds = [schedule[-index-(n//2*i):-index-(n//2*(i-1))] for i in range(1, 4)] if len(schedule) >= (2*n-1) else []
+    if len(schedule) >= n//2:
+        prev_round = schedule[-index-(n//2):-index] if index != 0 else schedule[-index-(n//2):]
+    else:
+        prev_round = []
 
     # Checks if a team is playing in the current round
     if check_repeat(m, current):
@@ -145,7 +149,6 @@ def handle_complete_schedule(n, schedule, schedules, args):
 
 # Generate all possible schedules given all possible matchups
 def generate_schedules(n, matchups, streaks, schedules, args, schedule=[]):
-    #print("Streaks: ", streaks)
     # If the maximum number of schedules has been reached, return
     if len(schedules) == args.max or get_count() == args.max:
         return
@@ -158,6 +161,9 @@ def generate_schedules(n, matchups, streaks, schedules, args, schedule=[]):
 
     # For each round still possible, generate a new schedule
     for m in matchups:
+        # If the maximum number of schedules has been reached, return
+        if len(schedules) == args.max or get_count() == args.max:
+            return
         # Checks if a team plays back to back or a team is on the road or at home more than three times in a row
         if check_constraints(schedule, streaks, n, m):
             continue
@@ -232,7 +238,7 @@ def handle_random(n, args):
         generate_TTP(n, args)
 
 
-# Main function to run the program
+# Main function takes care of random sampling or normal TTP generation
 def main(n, args=None):
     if args.random != None:
         handle_random(n, args)

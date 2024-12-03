@@ -4,6 +4,7 @@ __pycache__/
 # Ignore folders containing data such as the schedules and distances
 Schedules/
 Distances/
+Count/
 
 # Ignore the TEMP folder
 TEMP/
